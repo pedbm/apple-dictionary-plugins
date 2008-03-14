@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>German</string>
+	<key>CFBundleIdentifier</key>
+	<string>de.tekl.dictionary.beoLingusDeutschEnglisch</string>
+	<key>CFBundleName</key>
+	<string>BeoLingus Deutsch-Englisch</string>
+	<key>CFBundleShortVersionString</key>
+	<string>v2008.03.14</string>
+	<key>CFBundleVersion</key>
+	<string>2008.03.14</string>
+	<key>DCSDictionaryCopyright</key>
+	<string>Copyright © 1995-2008 TU Chemnitz, www.beolingus.de / Wolfgang Reszel, www.tekl.de</string>
+	<key>DCSDictionaryFrontMatterReferenceID</key>
+	<string>front_back_matter</string>
+	<key>DCSDictionaryManufacturerName</key>
+	<string>Wolfgang Reszel (www.tekl.de)</string>
+	<key>LSHasLocalizedDisplayName</key>
+	<true/>
+</dict>
+</plist>
