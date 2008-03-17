@@ -96,17 +96,17 @@ sup {
     margin-top: 1em;
     text-align:center;
     font-size:70%;
-    color:#ccc;
+    color:#aaa;
     border-top: #eee 1px solid;
 }
 .copyright span {
-    color:#ccc;
+    color:#aaa;
 }
 
 .copyright span a {
-    color:#ccc !important;
+    color:#aaa !important;
 }
 
 span.hsb:before	{ content:'•'; font-size:80%; vertical-align:-9%;}
 
-span.ipa { font-family:'Geneva','Helvetica'; font-size:80%; font-weight:normal; padding:0 0.2em;}
+span.ipa { font-family:'Geneva','Helvetica'; font-size:70%; font-weight:normal; padding:0 0.2em;}

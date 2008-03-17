@@ -62,7 +62,6 @@ install:
 	@touch $(DESTINATION_FOLDER)
 	@echo "Done."
 	@echo "To test the new dictionary, try Dictionary.app."
-	killall DictionaryService
 
 clean:
 	$(RM) -rf $(DICT_DEV_KIT_OBJ_DIR)
