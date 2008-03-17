@@ -29,7 +29,7 @@ if len(sys.argv) == 2:
         dictAdd = " small"
 
 print "Lexikon-Plugin ("+dictFull+dictAdd+") auf Basis von Beolingus.de"
-print "CreateXML v0.8 von Wolfgang Reszel, 2008-03-15"
+print "CreateXML v0.8 von Wolfgang Reszel, 2008-03-17"
 print
 print "Aktuelle Wortliste wird herunterladen ..."
 
@@ -117,9 +117,10 @@ for line in sourcefile:
                         element = element + fachgebiet
             
                 if id == "":
-                    id = re.sub('(?u)[^\w&@$(){}~\[\]*]','_',element)
-                    id = re.sub("_+","_",id)
-                    id = re.sub("(?u)_$","",id)
+                    id = element
+                    id = re.sub('(?u)[\"<>]','_',element)
+                    id = re.sub("(?u)_+","_",id)
+                    id = re.sub("(?u)(.)_$","\\1",id)
                     
                 dvalue = re.sub('\([^)]+\)|\{[^}]+\}|\[[^]]+\]',"",element).strip()
                 if dvalue == "":
@@ -194,6 +195,7 @@ destfile.write( u"""
     <h1><b>Wörterbuch %s</b></h1>
     <div><small><b>Version: %s</b></small></div>
     <p>
+        <img src="Images/beolingus.gif" align="right" style="padding-left:10px" alt=""/>
     	Dieses Wörterbuch basiert auf dem Online-Wörterbuch<br/>
     	<a href="http://www.beolingus.de">www.beolingus.de</a> der TU Chemnitz.
     </p>
@@ -202,11 +204,11 @@ destfile.write( u"""
     </p>
     <p>
         <b>Updates:</b> Die aktuellste Version finden Sie unter <a href="http://www.tekl.de">www.tekl.de</a>.<br/>
-        Support und den Quellcode finden Sie unter <a href="http://beo-dictionary.googlecode.com"><b>beo-dictionary.googlecode.com</b></a>.
+        Support und den Quellcode finden Sie unter <a href="http://apple-dictionary-plugins.googlecode.com"><b>apple-dictionary-plugins.googlecode.com</b></a>.
     </p>
     <p>
         <b>Lizenz:</b><br/>
-        Die Wortliste und diess Wörterbuch für das Apple Lexikon unterliegen der
+        Die Wortliste und dieses Lexikon-Plugin unterliegen der
         <a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt">GNU public license v2</a><br/>
     </p>
 </d:entry>
