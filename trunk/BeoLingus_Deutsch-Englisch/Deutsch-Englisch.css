@@ -44,3 +44,18 @@ span.column {
 	margin-bottom: 0.5em;
 	padding: 0.5em;
 }
+
+.copyright {
+    margin-top: 1em;
+    text-align:center;
+    font-size:70%;
+    color:#ccc;
+    border-top: #eee 1px solid;
+}
+.copyright span {
+    color:#ccc;
+}
+
+.copyright span a {
+    color:#ccc !important;
+}

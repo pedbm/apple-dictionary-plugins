@@ -19,7 +19,7 @@ def sort_by_value(d):
 os.system("clear")
 
 print "Lexikon-Plugin auf Basis von OpenThesaurus.de"
-print "CreateXML v0.5 von Wolfgang Reszel, 2008-03-13"
+print "CreateXML v0.6 von Wolfgang Reszel, 2008-03-15"
 print
 print "Aktueller Thesaurus wird herunterladen ",
 
@@ -44,11 +44,13 @@ dvalues = {}
 titles = {}
 headlines = {}
 lengths = {}
+linkwords = {}
 
 for line in sourcefile:
     if line[0] == "#":
         continue
     line = line.strip()
+    line = line.replace("&","&amp;")
     line = line.replace("<","&lt;")
     line = line.replace(">","&gt;")
     elements = line.split(";")
@@ -68,6 +70,7 @@ for line in sourcefile:
 
         id = re.sub('(?u)[^\w&@$(){}~\[\]*]','_',element)
         id = re.sub("_+","_",id)
+        id = re.sub("(?u)_$","",id)
     
         dvalue = re.sub('\([^)]+\)',"",element).strip()
                       
@@ -76,8 +79,9 @@ for line in sourcefile:
         else:
             lengths[id] = len(id)
             result[id] = "<div>" + translations + "</div>"
-            dvalues[id] = '<d:index d:value="'+dvalue+'" d:title="'+dvalue+'"/>'
+            dvalues[id] = u'<d:index d:value="'+dvalue+u'" d:title="'+dvalue+u'"/>'
             titles[id] = element
+            linkwords[id] = urllib.quote(re.sub('\([^)]+\)|{[^}]+}|\[[^\]]+\]',"",element).strip().encode("utf-8"))
             headlines[id] = re.sub('(\([^)]+\))', r'<i>\1</i>',element)
 
         dvalueSplit = dvalue.split()
@@ -86,11 +90,11 @@ for line in sourcefile:
                 devalueHyphenSplit = i.split("-")
                 for j in range(1,len(devalueHyphenSplit)):
                     if len(devalueHyphenSplit[j]) > 1:
-                        if '<d:index d:value="'+devalueHyphenSplit[j].lower()+'"' not in dvalues[id].lower():
-                            dvalues[id] = dvalues[id] + '\n<d:index d:value="'+devalueHyphenSplit[j]+'" d:title="'+dvalue+'"/>'
+                        if u'<d:index d:value="'+devalueHyphenSplit[j].lower()+u'"' not in dvalues[id].lower():
+                            dvalues[id] = dvalues[id] + '\n<d:index d:value="'+devalueHyphenSplit[j]+u'" d:title="⇒ '+dvalue+'"/>'
                 if '<d:index d:value="'+i.lower()+'"' not in dvalues[id].lower():
                     if i[0] != "-" and i[len(i)-1] != "-":
-                        dvalues[id] = dvalues[id] + '\n<d:index d:value="'+i+'" d:title="'+dvalue+'"/>'
+                        dvalues[id] = dvalues[id] + '\n<d:index d:value="'+i+u'" d:title="⇒ '+dvalue+'"/>'
 
 sourcefile.close()
 
@@ -100,12 +104,14 @@ destfile.write("""<?xml version="1.0" encoding="utf-8"?>
 <d:dictionary xmlns="http://www.w3.org/1999/xhtml" xmlns:d="http://www.apple.com/DTDs/DictionaryService-1.0.rng">""")
                 
 for id in sort_by_value(lengths):    
-    destfile.write("""
+    destfile.write( u"""
 <d:entry id="%s" d:title="%s">
 %s
 <h1>%s</h1>
 %s
-</d:entry>""" % (id,titles[id],dvalues[id],headlines[id], result[id]) )
+<div class="copyright" d:priority="2">
+<span><a href="http://www.openthesaurus.de/overview.php?word=%s">aus OpenThesaurus.de</a> · © 2008 Daniel Naber</span></div>
+</d:entry>""" % (id,titles[id],dvalues[id],headlines[id], result[id], linkwords[id] ) ) 
         
 destfile.write( u"""
 <d:entry id="front_back_matter" d:title="Voderer/Hinterer Teil">

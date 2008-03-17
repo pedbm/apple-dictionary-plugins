@@ -29,7 +29,7 @@ if len(sys.argv) == 2:
         dictAdd = " small"
 
 print "Lexikon-Plugin ("+dictFull+dictAdd+") auf Basis von Beolingus.de"
-print "CreateXML v0.7 von Wolfgang Reszel, 2008-03-14"
+print "CreateXML v0.8 von Wolfgang Reszel, 2008-03-15"
 print
 print "Aktuelle Wortliste wird herunterladen ..."
 
@@ -54,12 +54,14 @@ dvalues = {}
 titles = {}    
 formatted = {}
 lengths = {}
+linkwords = {}
 
 for line in sourcefile:
     if line[0] == "#":
         continue
 
     line = line.strip()
+    line = line.replace("&","&amp;")
     line = line.replace("<","&lt;")
     line = line.replace(">","&gt;")
     line = line.replace(":: ::","::")
@@ -117,6 +119,7 @@ for line in sourcefile:
                 if id == "":
                     id = re.sub('(?u)[^\w&@$(){}~\[\]*]','_',element)
                     id = re.sub("_+","_",id)
+                    id = re.sub("(?u)_$","",id)
                     
                 dvalue = re.sub('\([^)]+\)|\{[^}]+\}|\[[^]]+\]',"",element).strip()
                 if dvalue == "":
@@ -141,15 +144,16 @@ for line in sourcefile:
                     if "<div>" + translations.lower() + "</div>" not in result[id].lower():
                         result[id] = result[id] + "\n<div>" + translations + "</div>"
                     if '<d:index d:value="'+dvalue.lower()+'"' not in dvalues[id].lower():
-                        dvalues[id] = dvalues[id] + '\n<d:index d:value="'+dvalue+'" d:title="'+dvalue+'"/>'
+                        dvalues[id] = dvalues[id] + '\n<d:index d:value="'+dvalue+'" d:title="'+dvalue+'"/>'
                     if '<d:index d:value="'+dvalue2.lower()+'"' not in dvalues[id].lower():
-                        dvalues[id] = dvalues[id] + '\n<d:index d:value="'+dvalue2+'" d:title="'+dvalue2+'"/>'
+                        dvalues[id] = dvalues[id] + '\n<d:index d:value="'+dvalue2+'" d:title="'+dvalue2+'"/>'
                 else:
                     lengths[id] = len(id)
                     result[id] = "<div>" + translations + "</div>"
-                    dvalues[id] = '<d:index d:value="'+dvalue2+'" d:title="'+dvalue2+'"/>'
+                    dvalues[id] = '<d:index d:value="'+dvalue2+'" d:title="'+dvalue2+'"/>'
                     if dvalue != dvalue2:
-                        dvalues[id] = dvalues[id] + '\n<d:index d:value="'+dvalue+'" d:title="'+dvalue+'"/>'
+                        dvalues[id] = dvalues[id] + '\n<d:index d:value="'+dvalue+'" d:title="'+dvalue+'"/>'
+                    linkwords[id] = urllib.quote(re.sub('\([^)]+\)|{[^}]+}|\[[^\]]+\]',"",element).strip().encode("utf-8"))
                     titles[id] = element
                     formatted[id] = '<h1>'+formattedsource+'</h1>'
                     dvalueSplit = dvalue.split()
@@ -161,10 +165,10 @@ for line in sourcefile:
                         for j in range(1,len(devalueHyphenSplit)):
                             if len(devalueHyphenSplit[j]) > 1:
                                 if '<d:index d:value="'+devalueHyphenSplit[j].lower()+'"' not in dvalues[id].lower():
-                                    dvalues[id] = dvalues[id] + '\n<d:index d:value="'+devalueHyphenSplit[j]+'" d:title="'+dvalue+'"/>'
+                                    dvalues[id] = dvalues[id] + '\n<d:index d:value="'+devalueHyphenSplit[j]+u'" d:title="⇒ '+dvalue+'"/>'
                         if '<d:index d:value="'+i.lower()+'"' not in dvalues[id].lower():
                             if i[0] != "-" and i[len(i)-1] != "-":
-                                dvalues[id] = dvalues[id] + '\n<d:index d:value="'+i+'" d:title="'+dvalue+'"/>'
+                                dvalues[id] = dvalues[id] + '\n<d:index d:value="'+i+u'" d:title="⇒ '+dvalue+'"/>'
 
             index+=1
 
@@ -176,12 +180,14 @@ destfile.write("""<?xml version="1.0" encoding="utf-8"?>
 <d:dictionary xmlns="http://www.w3.org/1999/xhtml" xmlns:d="http://www.apple.com/DTDs/DictionaryService-1.0.rng">""")
 
 for id in sort_by_value(lengths):    
-   destfile.write("""
+   destfile.write( u"""
 <d:entry id="%s" d:title="%s">
 %s
 %s
 %s
-</d:entry>""" % (id,titles[id],dvalues[id],formatted[id], result[id]) )
+<div class="copyright" d:priority="2">
+<span><a href="http://www.beolingus.de/dings.cgi?query=%s">aus BeoLingus.de</a> · © 2008 TU Chemnitz</span></div>
+</d:entry>""" % (id,titles[id],dvalues[id],formatted[id], result[id], linkwords[id]) )
         
 destfile.write( u"""
 <d:entry id="front_back_matter" d:title="Voderer/Hinterer Teil">
