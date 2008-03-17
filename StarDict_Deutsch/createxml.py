@@ -43,7 +43,52 @@ copyright = {}
 
 copyright['ldaf'] = u'<div class="copyright" d:priority="2"><span><a href="http://stardict.sourceforge.net/Dictionaries_de.php">aus LDaF.dict</a> (Langenscheidt: Deutsch als Fremdsprache) · Made 2006 by Hu Zheng for <a href="http://stardict.sourceforge.net">StarDict</a></span></div>'
 copyright['duden'] = u'<div class="copyright" d:priority="2"><span><a href="http://stardict.sourceforge.net/Dictionaries_de.php">aus Duden.dict</a> · Made 2006 by Hu Zheng for <a href="http://stardict.sourceforge.net">StarDict</a></span></div>'
+copyright['ftypes'] = u'<div class="copyright" d:priority="2"><span><a href="http://de.wikipedia.org/w/index.php?title=Liste_der_Dateiendungen">aus de.Wikipedia.org</a></span></div>'
 
+ftypesFile = codecs.open('dateitypen.txt','r','utf-8')
+
+for line in ftypesFile:
+    if "|---" in line[:4] or line == "":
+        continue
+    cells = line.split("||")
+    id = cells[0][2:].strip() 
+    id = re.sub("\[|\]","",id).strip()
+    translationStr = "<h1>"+id+"</h1>\n"
+    if cells[1].strip() != "-":
+        translationStr = translationStr+"<p>"+cells[1].strip()+"</p>\n"
+    if len(cells) == 3:
+        translationStr = translationStr+"<p>"+cells[2].strip()+"</p>\n"
+    translationStr = translationStr+copyright['ftypes']
+    
+    translationStr = re.sub("\[+([a-z]+:/[^\[\] ]+)\]+","<a href=\"\\1\">\\1</a>",translationStr)
+    translationStr = re.sub("\[+([a-z]+:/[^\[\] ]+) ([^\[\]]+)\]+","<a href=\"\\1\">\\2</a>",translationStr)
+    translationStr = re.sub("\[+([^\[\]|]+)\]+","<a href=\"x-dictionary:d:\\1\">\\1</a>",translationStr)    
+    translationStr = re.sub("\[+([^\[\]|]+)\|([^\[\]]+)\]+","<a href=\"x-dictionary:d:\\1\">\\2</a>",translationStr)    
+    translationStr = re.sub("''+([^']+?)''+","<b>\\1</b>",translationStr)    
+        
+    if lengths.has_key(id):
+        if translationStr.lower() not in dictionary[id].lower():
+            dictionary[id] = dictionary[id]+translationStr
+    else:
+        dictionary[id] = translationStr
+        lengths[id] = len(id)
+        dvalues[id] = ''
+        titles[id] = id
+    
+    dvalueSplit = id.split(",")
+    for dvalue in dvalueSplit:
+        dvalue = dvalue.strip()
+        if dvalue == "..." or dvalue == u"…":
+            continue
+        dvalue = re.sub("(\.[^ ]+).*","\\1",dvalue)
+        if '<d:index d:value="'+dvalue.lower()+'"' not in dvalues[id].lower():
+            dvalues[id] = dvalues[id]+'<d:index d:value="'+dvalue+u'" d:title="'+id.replace(".",u"․")+'"/>\n'
+            dvalues[id] = dvalues[id]+'<d:index d:value="'+dvalue[1:]+u'" d:title="'+id.replace(".",u"․")+'"/>\n'
+
+    # print dvalues[id].encode("utf-8")
+    # print translationStr.encode("utf-8")
+    
+ftypesFile.close()      
 
 for dictName in dicts:
     print "Lese %s ..." % (dictName)
@@ -177,7 +222,7 @@ for dictName in dicts:
                 translationStr = re.sub("\x1D",u"ʃ",translationStr)
                 translationStr = re.sub("\x1E",u"ʒ",translationStr)
 
-                id = re.sub('(?u)[^\w&@$(){}~\[\]*]','_',indexStr)
+                id = re.sub('(?u)[\"<>]','_',indexStr)
                 id = re.sub("(?u)_+","_",id)
                 id = re.sub("(?u)(.)_$","\\1",id)
                 
@@ -218,11 +263,9 @@ for dictName in dicts:
             word = ''
 
         char = idxFile.read(1)
-        
-
     
-idxFile.close()    
-dictFile.close()
+    idxFile.close()    
+    dictFile.close()
 
 print "\nXML-Datei wird erzeugt ..."
 destfile = codecs.open('StarDictDeutsch.xml','w','utf-8')
@@ -230,34 +273,36 @@ destfile.write("""<?xml version="1.0" encoding="utf-8"?>
 <d:dictionary xmlns="http://www.w3.org/1999/xhtml" xmlns:d="http://www.apple.com/DTDs/DictionaryService-1.0.rng">""")
                 
 for id in sort_by_value(lengths):    
-    destfile.write("""
+    destfile.write( u"""
 <d:entry id="%s" d:title="%s">
 %s
 %s
 </d:entry>""" % (id,titles[id],dvalues[id],dictionary[id]) )
-    if writeTestHtml == 1:
-        html.write(dictionary[id])
+if writeTestHtml == 1:
+    html.write(dictionary[id])
         
 destfile.write( u"""
 <d:entry id="front_back_matter" d:title="Voderer/Hinterer Teil">
     <h1>StarDict Deutsch</h1>
     <div><small><b>Version: %s</b></small></div>
     <p>
-    	Dieser Thesaurus basiert auf dem Online-Thesaurus<br/>
-    	<a href="http://www.openthesaurus.de">www.openthesaurus.de</a> von Daniel Naber.
+    	Dieser Thesaurus basiert auf den Wörterbuch-Dateien <a href="http://stardict.sourceforge.net/Dictionaries_de.php">LDaF.dict</a>
+        und <a href="http://stardict.sourceforge.net/Dictionaries_de.php">Duden.dict</a> für <a href="http://stardict.sourceforge.net">StarDict</a> von Hu Zheng.
     </p>
     <p>
-        Das Python-Skript zur Umwandlung der OpenThesaurus-Wortliste<br/>in eine Apple Lexikon-Datei wurde von Wolfgang Reszel entwickelt.
+        Das Python-Skript zur Umwandlung der StarDict-Wörterbücher<br/>in ein Lexikon-Plugin wurde von Wolfgang Reszel entwickelt.
     </p>
     <p>
         <b>Updates:</b> Die aktuellste Version finden Sie unter <a href="http://www.tekl.de">www.tekl.de</a>.<br/>
-        Support und den Quellcode finden Sie unter <a href="http://thesaurus-deutsch.googlecode.com"><b>thesaurus-deutsch.googlecode.com</b></a>.
+        Support und den Quellcode finden Sie unter <a href="http://apple-dictionary-plugins.googlecode.com"><b>apple-dictionary-plugins.googlecode.com</b></a>.
     </p>
     <p>
         <img src="Images/cc-LGPL-a.png" align="left" style="padding-right:10px" alt=""/>
         <b>Lizenz:</b><br/>
-        Die Wortliste und diese Thesaurus-Datei für das Apple Lexikon unterliegen der
+        Dieses Lexikon-Plugin unterliegt der
         <a href="http://creativecommons.org/licenses/LGPL/2.1/">CC-GNU LPGL</a><br/>
+        Welcher Lizenz die Original-Wörterbücher unterliegen, ist auf den Download-Seiten nicht ersichtlich.<br/>
+        Bei Verletzung von Rechten Dritter, nehmen Sie bitte unverzüglich Kontakt mit <a href="mailto:support.tekl@mac.com">mir</a> auf.
     </p>
 </d:entry>
 </d:dictionary>""" % (marketingVersion )  )
