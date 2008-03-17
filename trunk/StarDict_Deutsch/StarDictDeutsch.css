@@ -1,0 +1,112 @@
+@charset "UTF-8";
+@namespace d url(http://www.apple.com/DTDs/DictionaryService-1.0.rng);
+
+d|entry {
+}
+
+h1	{
+	font-size: 150%;
+	margin-bottom:0.2em;
+	vertical-align:top;
+}
+
+h2	{
+	font-size: 110%;
+	margin-top:1em;
+	margin-bottom:0;
+	padding:0;
+	vertical-align:top;
+}
+
+p {
+    padding:0;
+    margin:0.5em 0 0 0;
+}
+
+div.list {
+    margin-top:0.5em;
+    padding-left:2em;
+    text-indent:-1em;
+}
+
+div.listB {
+    margin-top:0.5em;
+    padding-left:2em;
+    text-indent:-1.6em;
+}
+
+.bigger {
+    font-size: 110%;
+    padding-right:0.2em;
+}
+
+.bigger+b {
+	margin-left: 0.2em;
+}
+
+i {
+    font-weight:normal;
+    vertical-align: baseline;
+	padding-right:0.2em;
+}
+
+.s1 {
+    font-size: 80%;
+    font-weight: normal;
+    vertical-align: baseline;
+}
+
+.s2	{
+	font-size: 80%;
+    vertical-align: baseline;
+    color: gray;
+}
+
+span.column {
+	display: block;
+	border: solid 2px #c0c0c0;
+	margin-left: 2em;
+	margin-right: 2em;
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+	padding: 0.5em;
+}
+
+.note {
+    font-weight:normal;
+    text-indent:-0.8em;
+    padding-left:0.8em;
+    margin-top:0.3em;
+    margin-bottom:0.3em;
+    color:gray;
+    font-style:italic;
+    font-size:80%;
+}
+.note .noteB {
+    padding-left:3em;
+    margin-right:-2.5em;
+    border-top:1px dotted gray;
+}
+
+sup {
+    font-size:70%;
+}
+
+.copyright {
+    margin-top: 1em;
+    text-align:center;
+    font-size:70%;
+    color:#ccc;
+    border-top: #eee 1px solid;
+}
+.copyright span {
+    color:#ccc;
+}
+
+.copyright span a {
+    color:#ccc !important;
+}
+
+span.hsb:before	{ content:'•'; font-size:80%; vertical-align:-9%;}
+
+span.ipa { font-family:'Geneva','Helvetica'; font-size:80%; font-weight:normal; padding:0 0.2em;}

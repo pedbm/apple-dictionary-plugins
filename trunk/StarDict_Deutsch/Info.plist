@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>German</string>
+	<key>CFBundleIdentifier</key>
+	<string>de.tekl.dictionary.starDictDeutsch</string>
+	<key>CFBundleName</key>
+	<string>StarDict Deutsch</string>
+	<key>CFBundleShortVersionString</key>
+	<string>v2008.03.17</string>
+	<key>CFBundleVersion</key>
+	<string>2008.03.17</string>
+	<key>DCSDictionaryCopyright</key>
+	<string>Made 2006 by Hu Zheng for StarDict, stardict.sourceforge.net / Wolfgang Reszel, www.tekl.de</string>
+	<key>DCSDictionaryFrontMatterReferenceID</key>
+	<string>front_back_matter</string>
+	<key>DCSDictionaryManufacturerName</key>
+	<string>Wolfgang Reszel (www.tekl.de)</string>
+	<key>LSHasLocalizedDisplayName</key>
+	<true/>
+</dict>
+</plist>
