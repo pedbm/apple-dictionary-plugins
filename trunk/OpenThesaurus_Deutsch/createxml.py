@@ -68,9 +68,9 @@ for line in sourcefile:
         translations = translations[2:len(translations)]
         translations = re.sub('(\([^)]+\))', r'<i>\1</i>',translations)
 
-        id = re.sub('(?u)[^\w&@$(){}~\[\]*]','_',element)
-        id = re.sub("_+","_",id)
-        id = re.sub("(?u)_$","",id)
+        id = re.sub('(?u)[\"<>]','_',element)
+        id = re.sub("(?u)_+","_",id)
+        id = re.sub("(?u)(.)_$","\\1",id)
     
         dvalue = re.sub('\([^)]+\)',"",element).strip()
                       
@@ -122,16 +122,16 @@ destfile.write( u"""
     	<a href="http://www.openthesaurus.de">www.openthesaurus.de</a> von Daniel Naber.
     </p>
     <p>
-        Das Python-Skript zur Umwandlung der OpenThesaurus-Wortliste<br/>in eine Apple Lexikon-Datei wurde von Wolfgang Reszel entwickelt.
+        Das Python-Skript zur Umwandlung der OpenThesaurus-Wortliste<br/>in ein Lexikon-Plugin wurde von Wolfgang Reszel entwickelt.
     </p>
     <p>
         <b>Updates:</b> Die aktuellste Version finden Sie unter <a href="http://www.tekl.de">www.tekl.de</a>.<br/>
-        Support und den Quellcode finden Sie unter <a href="http://thesaurus-deutsch.googlecode.com"><b>thesaurus-deutsch.googlecode.com</b></a>.
+        Support und den Quellcode finden Sie unter <a href="http://apple-dictionary-plugins.googlecode.com"><b>apple-dictionary-plugins.googlecode.com</b></a>.
     </p>
     <p>
         <img src="Images/cc-LGPL-a.png" align="left" style="padding-right:10px" alt=""/>
         <b>Lizenz:</b><br/>
-        Die Wortliste und diese Thesaurus-Datei für das Apple Lexikon unterliegen der
+        Die Wortliste und dieses Lexikon-Plugin unterliegen der
         <a href="http://creativecommons.org/licenses/LGPL/2.1/">CC-GNU LPGL</a><br/>
     </p>
 </d:entry>
