@@ -49,13 +49,13 @@ span.column {
     margin-top: 1em;
     text-align:center;
     font-size:70%;
-    color:#ccc;
+    color:#aaa;
     border-top: #eee 1px solid;
 }
 .copyright span {
-    color:#ccc;
+    color:#aaa;
 }
 
 .copyright span a {
-    color:#ccc !important;
+    color:#aaa !important;
 }
