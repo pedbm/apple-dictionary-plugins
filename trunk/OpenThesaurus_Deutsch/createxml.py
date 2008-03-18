@@ -107,7 +107,7 @@ for id in sort_by_value(lengths):
     destfile.write( u"""
 <d:entry id="%s" d:title="%s">
 %s
-<h1>%s</h1>
+<h2 d:pr="1">%s</h2>
 %s
 <div class="copyright" d:priority="2">
 <span><a href="http://www.openthesaurus.de/overview.php?word=%s">aus OpenThesaurus.de</a> · © 2008 Daniel Naber</span></div>
