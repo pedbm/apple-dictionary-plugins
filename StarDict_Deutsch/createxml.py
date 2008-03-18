@@ -41,8 +41,8 @@ dvalues = {}
 titles = {}
 copyright = {}
 
-copyright['ldaf'] = u'<div class="copyright" d:priority="2"><span><a href="http://stardict.sourceforge.net/Dictionaries_de.php">aus LDaF.dict</a> (Langenscheidt: Deutsch als Fremdsprache) · Made 2006 by Hu Zheng for <a href="http://stardict.sourceforge.net">StarDict</a></span></div>'
-copyright['duden'] = u'<div class="copyright" d:priority="2"><span><a href="http://stardict.sourceforge.net/Dictionaries_de.php">aus Duden.dict</a> · Made 2006 by Hu Zheng for <a href="http://stardict.sourceforge.net">StarDict</a></span></div>'
+copyright['ldaf'] = u'<div class="copyright" d:priority="2"><span>Nach der Rechtschreibreform von 1996<br/><a href="http://stardict.sourceforge.net/Dictionaries_de.php">aus LDaF.dict</a> · Erstellt 2006 von Hu Zheng für <a href="http://stardict.sourceforge.net">StarDict</a></span></div>'
+copyright['duden'] = u'<div class="copyright" d:priority="2"><span>Nach der Rechtschreibreform von 1996<br/><a href="http://stardict.sourceforge.net/Dictionaries_de.php">aus Duden.dict</a> · Erstellt 2006 von Hu Zheng für <a href="http://stardict.sourceforge.net">StarDict</a></span></div>'
 copyright['ftypes'] = u'<div class="copyright" d:priority="2"><span><a href="http://de.wikipedia.org/w/index.php?title=Liste_der_Dateiendungen">aus de.Wikipedia.org</a></span></div>'
 
 ftypesFile = codecs.open('dateitypen.txt','r','utf-8')
@@ -53,7 +53,7 @@ for line in ftypesFile:
     cells = line.split("||")
     id = cells[0][2:].strip() 
     id = re.sub("\[|\]","",id).strip()
-    translationStr = "<h1>"+id+"</h1>\n"
+    translationStr = "<h1>Dateiendung: "+id+"</h1>\n"
     if cells[1].strip() != "-":
         translationStr = translationStr+"<p>"+cells[1].strip()+"</p>\n"
     if len(cells) == 3:
@@ -82,8 +82,8 @@ for line in ftypesFile:
             continue
         dvalue = re.sub("(\.[^ ]+).*","\\1",dvalue)
         if '<d:index d:value="'+dvalue.lower()+'"' not in dvalues[id].lower():
-            dvalues[id] = dvalues[id]+'<d:index d:value="'+dvalue+u'" d:title="'+id.replace(".",u"․")+'"/>\n'
-            dvalues[id] = dvalues[id]+'<d:index d:value="'+dvalue[1:]+u'" d:title="'+id.replace(".",u"․")+'"/>\n'
+            dvalues[id] = dvalues[id]+'<d:index d:value="'+dvalue+u'" d:title="Dateiendung: '+id+'"/>\n'
+            dvalues[id] = dvalues[id]+'<d:index d:value="'+dvalue[1:]+u'" d:title="Dateiendung: '+id+'"/>\n'
 
     # print dvalues[id].encode("utf-8")
     # print translationStr.encode("utf-8")
@@ -117,7 +117,7 @@ for dictName in dicts:
 
             indexStr = re.sub("(?ui)^(?:\d, ?\d|\d)([a-z])","\\1",indexStr) 
 
-            if "ChorX" not in indexStr[:4]:
+            if "zutageX" not in indexStr[:6]:
                 translationStr = unicode(dictFile.read(indexSize),'utf-8') 
                 # <...> durch {...} ersetzen 
                 translationStr = re.sub("(?u)<([^<>]+)>","{\\1}",translationStr)
@@ -135,8 +135,10 @@ for dictName in dicts:
                 translationStr = re.sub("(?u){([^{}]+)}","<i>{\\1}</i>",translationStr)
                 # Nummerierung fett setzen
                 translationStr = re.sub("(?ui)(?: |^)(\d\. [\w=]\)|\d+\.|[a-z]\)) "," <b>\\1</b> ",translationStr)
+                translationStr = re.sub("(?ui)(\()(\d\. [\w=]\)|\d+\.) ","\\1<b>\\2</b> ",translationStr)
                 translationStr = re.sub("(?u)(\] |; |\) )(\d+) ","\\1\n<b>\\2</b> ",translationStr)
                 translationStr = re.sub("(?u)(?:\n|^)(\d+) ","\n<b>\\1</b> ",translationStr)
+                translationStr = re.sub("(?u)(; nur in )(\d+) ","\n\\1<b class=\"bigger\">\\2</b> ",translationStr)
                 # Fehlerhafte Fettsetzung zurücknehmen
                 translationStr = re.sub("(?ui)(im *|der *|wird *|mit *|beim *|im *|eigtl\. *|des *)<b>([^<>]+)</b> *","\\1 \\2 ",translationStr)
                 translationStr = re.sub("(?ui)<b>([^<>]+)</b> *(ist\W*|wird\W*|(und \d. )?Person\W*|Part\.)","\\1 \\2",translationStr)
@@ -161,7 +163,11 @@ for dictName in dicts:
                     translationStr = re.sub("(?ui)([a-z.:] *)<b>(\d+\.</b>)","\\1\n<b class=\"bigger\">\\2",translationStr) 
                     translationStr = re.sub("(?ui)(<b class=\"bigger\">\d+\. )([a-z]\))","\\1</b><b>\\2",translationStr) 
                     # Bigger innerhalb von [] wieder entfernen
-                    translationStr = re.sub("(?us)(\[[^\[\]]+?)\n<b class=\"bigger\">([^\[\]]+?\])","\\1<b>\\2",translationStr)
+                    for r in range(3):
+                        translationStr = re.sub("(?us)(\[[^\[\]]+?)\n<b class=\"bigger\">([^\[\]]+?\])","\\1<b>\\2",translationStr)
+                    # Bigger innerhalb von () wieder entfernen
+                    for r in range(3):
+                        translationStr = re.sub("(?us)(\([^\(\)]+?)\n<b class=\"bigger\">([^\(\)]+?\))","\\1<b>\\2",translationStr)
                     # Punkt hinter Zahl entfernen
                     translationStr = re.sub("(?u)(<b class=\"bigger\">\d+)\.</b>","\\1</b>",translationStr) 
 
@@ -196,7 +202,7 @@ for dictName in dicts:
                     translationStr = re.sub("(?u)(<span class=\"syntax\" d:pr=\"1\">.*?)</span> *</b> *<br/>","\\1<br/></span></b>",translationStr)
                     
                 # Letzte Zeile ohne Tag taggen
-                translationStr = re.sub("(?u)(\n\n)([^<\n][^\n]+)$","\\1<h2>\\2</h2>",translationStr)
+                translationStr = re.sub("(?u)(\n\n)([^<\n][^\n]+)$","\\1<p>\\2</p>",translationStr)
 
                 # Hochgestellte Zahlen korrigieren und setzen 
                 translationStr = re.sub("\xb2","2",translationStr)
@@ -287,7 +293,8 @@ destfile.write( u"""
     <div><small><b>Version: %s</b></small></div>
     <p>
     	Dieser Thesaurus basiert auf den Wörterbuch-Dateien <a href="http://stardict.sourceforge.net/Dictionaries_de.php">LDaF.dict</a>
-        und <a href="http://stardict.sourceforge.net/Dictionaries_de.php">Duden.dict</a> für <a href="http://stardict.sourceforge.net">StarDict</a> von Hu Zheng.
+        und <a href="http://stardict.sourceforge.net/Dictionaries_de.php">Duden.dict</a> für <a href="http://stardict.sourceforge.net">StarDict</a> von Hu Zheng.<br/>
+        Beide Quellen wurden nach der Rechtschreibreform von 1996 erstellt, berücksichtigen aber nicht die Überarbeitung von 2004/2006.
     </p>
     <p>
         Das Python-Skript zur Umwandlung der StarDict-Wörterbücher<br/>in ein Lexikon-Plugin wurde von Wolfgang Reszel entwickelt.
