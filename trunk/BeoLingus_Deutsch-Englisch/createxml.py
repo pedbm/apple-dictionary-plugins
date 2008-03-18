@@ -156,7 +156,7 @@ for line in sourcefile:
                         dvalues[id] = dvalues[id] + '\n<d:index d:value="'+dvalue+'" d:title="'+dvalue+'"/>'
                     linkwords[id] = urllib.quote(re.sub('\([^)]+\)|{[^}]+}|\[[^\]]+\]',"",element).strip().encode("utf-8"))
                     titles[id] = element
-                    formatted[id] = '<h1>'+formattedsource+'</h1>'
+                    formatted[id] = '<h2 d:pr="1">'+formattedsource+'</h2>'
                     dvalueSplit = dvalue.split()
                     
                 dvalueSplit = dvalue.split()
