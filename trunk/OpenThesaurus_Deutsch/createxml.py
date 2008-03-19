@@ -68,17 +68,17 @@ for line in sourcefile:
         translations = translations[2:len(translations)]
         translations = re.sub('(\([^)]+\))', r'<i>\1</i>',translations)
 
-        id = re.sub('(?u)[\"<>]','_',element)
+        id = re.sub('(?u)[\"<>, ]','_',element)
         id = re.sub("(?u)_+","_",id)
         id = re.sub("(?u)(.)_$","\\1",id)
     
         dvalue = re.sub('\([^)]+\)',"",element).strip()
                       
         if result.has_key(id):
-            result[id] = result[id] + "\n<div>" + translations + "</div>"
+            result[id] = result[id] + "\n<p>" + translations + "</p>"
         else:
             lengths[id] = len(id)
-            result[id] = "<div>" + translations + "</div>"
+            result[id] = "<p>" + translations + "</p>"
             dvalues[id] = u'<d:index d:value="'+dvalue+u'" d:title="'+dvalue+u'"/>'
             titles[id] = element
             linkwords[id] = urllib.quote(re.sub('\([^)]+\)|{[^}]+}|\[[^\]]+\]',"",element).strip().encode("utf-8"))

@@ -10,6 +10,11 @@ h1,h2	{
 	vertical-align:top;
 }
 
+p {
+    margin: 0 0 0.4em 1em;
+    padding: 0;
+}
+
 i {
     font-weight:normal;
     vertical-align: baseline;

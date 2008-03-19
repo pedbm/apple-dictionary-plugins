@@ -15,6 +15,11 @@ h1 b {
   padding-right: 0.2em;
 }
 
+p {
+    margin: 0 0 0.4em 1em;
+    padding: 0;
+}
+
 i {
     font-weight:normal;
     font-size:80%;
