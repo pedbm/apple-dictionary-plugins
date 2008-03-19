@@ -1793,7 +1793,7 @@
 |-----
 | .dos || – || DOS-Textdatei
 |-----
-| .dos || Local <nowiki><-></nowiki> Unicode Translator for code pages || [[Novell]] [[NetWare]]
+| .dos || Local &lt;-&gt; Unicode Translator for code pages || [[Novell]] [[NetWare]]
 |-----
 | .dot || Line-Type definition || CorelDraw
 |-----
@@ -2544,7 +2544,6 @@
 | .gbs || Gameboy Sound || Gameboy Sound Image oder Musik Format vom Gameboy Movie Player
 |-----
 | .gbm || Gameboy Movie || Film Format vom Gameboy Movie Player
-|-----
 |-----
 | .gbx || - || Dateiformat von Nadeo für sein Spiel [[Trackmania]]
 |-----

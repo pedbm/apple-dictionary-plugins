@@ -50,10 +50,19 @@ ftypesFile = codecs.open('dateitypen.txt','r','utf-8')
 for line in ftypesFile:
     if "|---" in line[:4] or line == "":
         continue
+    line = line.replace("&","&amp;")
+    line = line.replace("&nbsp;",u" ")
+    line = line.replace("<","&lt;")
+    line = line.replace(">","&gt;")
     cells = line.split("||")
     id = cells[0][2:].strip() 
     id = re.sub("\[|\]","",id).strip()
-    translationStr = "<h1>Dateiendung: "+id+"</h1>\n"
+    dvalue = id
+    id = re.sub('(?u)[\"<>, ]','_',id)
+    id = re.sub("(?u)_+","_",id)
+    id = re.sub("(?u)(.)_$","\\1",id)
+
+    translationStr = "<h1>Dateiendung: "+cells[0][2:].strip()+"</h1>\n"
     if cells[1].strip() != "-":
         translationStr = translationStr+"<p>"+cells[1].strip()+"</p>\n"
     if len(cells) == 3:
@@ -73,9 +82,9 @@ for line in ftypesFile:
         dictionary[id] = translationStr
         lengths[id] = len(id)
         dvalues[id] = ''
-        titles[id] = id
+        titles[id] = dvalue
     
-    dvalueSplit = id.split(",")
+    dvalueSplit = dvalue.split(",")
     for dvalue in dvalueSplit:
         dvalue = dvalue.strip()
         if dvalue == "..." or dvalue == u"…":
@@ -114,10 +123,13 @@ for dictName in dicts:
             dictFile.seek(indexOffset)
 
             indexStr = unicode(word,'utf-8')
+            indexStr = indexStr.replace("&","&amp;")
+            indexStr = indexStr.replace(">","&gt;")
+            indexStr = indexStr.replace("<","&lt;")
 
             indexStr = re.sub("(?ui)^(?:\d, ?\d|\d)([a-z])","\\1",indexStr) 
 
-            if "zutageX" not in indexStr[:6]:
+            if "zutage" in indexStr[:6]:
                 translationStr = unicode(dictFile.read(indexSize),'utf-8') 
                 # <...> durch {...} ersetzen 
                 translationStr = re.sub("(?u)<([^<>]+)>","{\\1}",translationStr)
@@ -125,6 +137,11 @@ for dictName in dicts:
                 translationStr = translationStr.replace("&","&amp;")
                 translationStr = translationStr.replace(">","&gt;")
                 translationStr = translationStr.replace("<","&lt;")
+
+                pluraldvalues = re.sub("(?us)^([^\n:{]+)(\n?);.*","\\1",translationStr)
+                if pluraldvalues == translationStr:
+                    pluraldvalues = ""
+
                 # Texte mit || beginnend als Notiz markieren
 #                translationStr = re.sub("(?us)(\|\|)(.*?)(\n+|$|<| \|)","<div class=\"note\">\\1\\2</div>\\3",translationStr)
 #                translationStr = re.sub("(?us)([^>])(\|\|)(.*?)(\n+|$|<| \|)","\\1<div class=\"note\">\\2\\3</div>\\4",translationStr)
@@ -145,9 +162,10 @@ for dictName in dicts:
                 translationStr = re.sub("(?ui)<b>([^<>]+)</b> *(ist\W*|wird\W*|(und \d. )?Person\W*|Part\.)","\\1 \\2",translationStr)
                 translationStr = re.sub("(?u)(\(\d+ *|\d\., *)<b>([^<>]+)</b> *","\\1 \\2 ",translationStr)
                 translationStr = re.sub("(?u)(\([^\(\)]+)<b>([^<>\(\)]+\))</b>","\\1 \\2 ",translationStr)
+
                 # Erster Text bis zum ; in mit Schreibweisen-Tag umschließen (d:pr)
                 if dictName == "ldaf":
-                    translationStr = re.sub("(?u)^([^\n:{]+);","<span class=\"syntax\" d:pr=\"1\">\\1;</span>",translationStr)
+                    translationStr = re.sub("(?u)^([^\n:{]+)(\n?);","<span class=\"syntax\" d:pr=\"1\">\\1;</span>\\2",translationStr)
                     translationStr = re.sub("(?u)^([^;\n]+)(\) *|\] *)(\n<b>\d)","<span class=\"syntax\" d:pr=\"1\">\\1\\2</span>\\3",translationStr)
 
                 # Zwischenüberschrift einer Aufzählung fett setzen
@@ -215,7 +233,7 @@ for dictName in dicts:
                 # Siblentrennung durch <span class=hsb> ersetzen, somit erscheint das Trennungszeichen nicht beim Kopieren von Text
                 translationStr = translationStr.replace(u"·","<span class=\"hsb\"></span>")
                 # Hauptüberschrift voranstellen und Copyright anhängen
-                translationStr = "\n<h1>"+indexStr+"</h1>\n"+translationStr+copyright[dictName]
+                translationStr = "<h1>"+indexStr+"</h1>\n"+translationStr+copyright[dictName]
                 # Sonderzeichen in Lautschrift umwandeln
                 translationStr = re.sub("\x01",u"ɪ",translationStr)
                 translationStr = re.sub("\x02",u"ɛ",translationStr)
@@ -228,7 +246,7 @@ for dictName in dicts:
                 translationStr = re.sub("\x1D",u"ʃ",translationStr)
                 translationStr = re.sub("\x1E",u"ʒ",translationStr)
 
-                id = re.sub('(?u)[\"<>]','_',indexStr)
+                id = re.sub('(?u)[\"<>, ]','_',indexStr)
                 id = re.sub("(?u)_+","_",id)
                 id = re.sub("(?u)(.)_$","\\1",id)
                 
@@ -265,6 +283,8 @@ for dictName in dicts:
                                 if '<d:index d:value="'+i.lower()+'"' not in dvalues[id].lower() and indexI > 1:
                                     if i[0] != "-" and i[len(i)-1] != "-":
                                         dvalues[id] = dvalues[id] + '\n<d:index d:value="'+i+u'" d:title="⇒ '+indexStr+'"/>'
+
+                print pluraldvalues
             
             word = ''
 

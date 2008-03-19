@@ -118,7 +118,7 @@ for line in sourcefile:
             
                 if id == "":
                     id = element
-                    id = re.sub('(?u)[\"<>]','_',element)
+                    id = re.sub('(?u)[\"<>, ]','_',element)
                     id = re.sub("(?u)_+","_",id)
                     id = re.sub("(?u)(.)_$","\\1",id)
                     
@@ -142,15 +142,15 @@ for line in sourcefile:
                 formattedsource = formattedsource.replace(" </","</")
                    
                 if result.has_key(id):
-                    if "<div>" + translations.lower() + "</div>" not in result[id].lower():
-                        result[id] = result[id] + "\n<div>" + translations + "</div>"
+                    if "<p>" + translations.lower() + "</p>" not in result[id].lower():
+                        result[id] = result[id] + "\n<p>" + translations + "</p>"
                     if '<d:index d:value="'+dvalue.lower()+'"' not in dvalues[id].lower():
                         dvalues[id] = dvalues[id] + '\n<d:index d:value="'+dvalue+'" d:title="'+dvalue+'"/>'
                     if '<d:index d:value="'+dvalue2.lower()+'"' not in dvalues[id].lower():
                         dvalues[id] = dvalues[id] + '\n<d:index d:value="'+dvalue2+'" d:title="'+dvalue2+'"/>'
                 else:
                     lengths[id] = len(id)
-                    result[id] = "<div>" + translations + "</div>"
+                    result[id] = "<p>" + translations + "</p>"
                     dvalues[id] = '<d:index d:value="'+dvalue2+'" d:title="'+dvalue2+'"/>'
                     if dvalue != dvalue2:
                         dvalues[id] = dvalues[id] + '\n<d:index d:value="'+dvalue+'" d:title="'+dvalue+'"/>'
