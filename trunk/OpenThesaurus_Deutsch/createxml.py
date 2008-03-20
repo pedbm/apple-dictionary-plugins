@@ -19,8 +19,17 @@ def sort_by_value(d):
 os.system("clear")
 
 print "Lexikon-Plugin auf Basis von OpenThesaurus.de"
-print "CreateXML v0.6 von Wolfgang Reszel, 2008-03-15"
+print "CreateXML v0.7 von Wolfgang Reszel, 2008-03-20"
 print
+morphology = {}
+for file in ["morphology-cache.txt","../Morphologie_Deutsch/morphology-cache.txt"]:
+    if os.path.isfile(file):
+        print "Morpholgie-Cache-Datei gefunden und geladen.\n"
+        morphcache = open(file,'r')
+        morphology = pickle.load(morphcache)
+        morphcache.close()
+        break
+
 print "Aktueller Thesaurus wird herunterladen ",
 
 bundleVersion = datetime.datetime.today().strftime("%Y.%m.%d")
@@ -33,65 +42,8 @@ if string.find(str(download[1]),"Error") > 0:
     print download[1]
     exit()
 
-print "\nHeruntergeladene Datei wird entpackt ..."    
+print "\nHeruntergeladene Datei wird entpackt ..."
 os.system('gzip -d -f thesaurus.txt.gz')
-
-morphology = {}
-if os.path.isfile("morphology-cache.txt"):
-    print "\nMorpholgie-Cache-Datei gefunden und geladen."
-    morphcache = open('morphology-cache.txt','r')
-    morphology = pickle.load(morphcache)
-    morphcache.close()
-else:
-    if os.path.isfile("thesaurus.fle"):
-        print "\nMorpholgie-Datei gefunden. Auswertung ..."
-        sourcefile = codecs.open('thesaurus.fle','r','Windows-1252')
-        id = ""
-        idx = 0
-        for line in sourcefile:
-            if "nicht gefunden:" in line or line.strip() == "":
-                continue
-            if "--------------" in line:
-                id = ""
-                idx = 0
-                continue
-            if line[:4] == "GRU ":
-                continue
-            if id == "":
-                id = line.split(" ")[1].strip()
-                morphology[id] = ""
-            if u"Zusätze: " not in line and u"Präfixe: " not in line:
-                for word in line.split(" "):
-                    word = word.strip()
-                    if word == "":
-                        continue
-                    if word not in morphology[id] and word != id:
-                        if morphology[id] == "":
-                            morphology[id] = word
-                        else:
-                            morphology[id] = morphology[id]+","+word
-            else:
-                line = line.replace(u"Zusätze: ","")
-                line = line.replace(u"Präfixe: ","")
-                for x in line.split(" "):
-                    x = x.strip()
-                    if x == "":
-                        continue
-                    if not morphology.has_key(x+id):
-                        morphology[x+id] = ""
-                        for y in morphology[id].split(","):
-                            y = y.strip()
-                            if y == "":
-                                continue
-                            if morphology[x+id] == "":
-                                morphology[x+id] = x+y
-                            else:
-                                morphology[x+id] = morphology[x+id]+","+x+y
-            idx += 1
-        sourcefile.close()
-        morphcache = open('morphology-cache.txt','w')
-        pickle.dump(morphology,morphcache)
-        morphcache.close()
 
 print "\nDatei wird analysiert ..."
 sourcefile = codecs.open('thesaurus.txt','r','Windows-1252')
@@ -124,7 +76,7 @@ for line in sourcefile:
         translations = translations[2:len(translations)]
         translations = re.sub('(\([^)]+\))', r'<i>\1</i>',translations)
 
-        id = re.sub('(?u)[\"<>, ]','_',element)
+        id = re.sub('(?u)[\"<>, ]','_',element.lower())
         id = re.sub("(?u)_+","_",id)
         id = re.sub("(?u)(.)_$","\\1",id)
     
@@ -139,10 +91,13 @@ for line in sourcefile:
             titles[id] = element
             linkwords[id] = urllib.quote(re.sub('\([^)]+\)|{[^}]+}|\[[^\]]+\]',"",element).strip().encode("utf-8"))
             headlines[id] = re.sub('(\([^)]+\))', r'<i>\1</i>',element)
-            if morphology.has_key("id")
-                for x in morphology[id].split(","):
+            if morphology.has_key(dvalue):
+                for x in morphology[dvalue].split(","):
                     if u'<d:index d:value="'+x.lower()+u'"' not in dvalues[id].lower():
-                        dvalues[id] = dvalues[id] + '\n<d:index d:value="'+x+u'" d:title="⇒ '+x+'"/>'
+                        if x[:len(dvalue)].lower() == dvalue.lower():
+                            dvalues[id] = dvalues[id] + '\n<d:index d:value="'+x+u'" d:title="'+dvalue+'"/>'
+                        else:
+                            dvalues[id] = dvalues[id] + '\n<d:index d:value="'+x+u'" d:title="⇒ '+dvalue+'"/>'
 
         dvalueSplit = dvalue.split()
         for i in dvalueSplit:
@@ -152,14 +107,24 @@ for line in sourcefile:
                     if len(devalueHyphenSplit[j]) > 1:
                         if u'<d:index d:value="'+devalueHyphenSplit[j].lower()+u'"' not in dvalues[id].lower():
                             dvalues[id] = dvalues[id] + '\n<d:index d:value="'+devalueHyphenSplit[j]+u'" d:title="⇒ '+dvalue+'"/>'
-                    # if morphology.has_key("id")
-                    #     for x in morphology[id].split(","):
-                    #         if u'<d:index d:value="'+x.lower()+u'"' not in dvalues[id].lower():
-                    #             dvalues[id] = dvalues[id] + '\n<d:index d:value="'+x+u'" d:title="⇒ '+x+'"/>'
+                        if morphology.has_key(devalueHyphenSplit[j]):
+                            for x in morphology[devalueHyphenSplit[j]].split(","):
+                                if u'<d:index d:value="'+x.lower()+u'"' not in dvalues[id].lower():
+                                    if x[:len(dvalue)].lower() == dvalue.lower():
+                                        dvalues[id] = dvalues[id] + '\n<d:index d:value="'+x+u'" d:title="'+dvalue+'"/>'
+                                    else:
+                                        dvalues[id] = dvalues[id] + '\n<d:index d:value="'+x+u'" d:title="⇒ '+dvalue+'"/>'
                 if '<d:index d:value="'+i.lower()+'"' not in dvalues[id].lower():
                     if i[0] != "-" and i[len(i)-1] != "-":
                         dvalues[id] = dvalues[id] + '\n<d:index d:value="'+i+u'" d:title="⇒ '+dvalue+'"/>'
-        
+                        if morphology.has_key(i):
+                            for x in morphology[i].split(","):
+                                if u'<d:index d:value="'+x.lower()+u'"' not in dvalues[id].lower():
+                                    if x[:len(dvalue)].lower() == dvalue.lower():
+                                        dvalues[id] = dvalues[id] + '\n<d:index d:value="'+x+u'" d:title="'+dvalue+'"/>'
+                                    else:
+                                        dvalues[id] = dvalues[id] + '\n<d:index d:value="'+x+u'" d:title="⇒ '+dvalue+'"/>'
+
 
 sourcefile.close()
 
@@ -167,7 +132,7 @@ print "\nXML-Datei wird erzeugt ..."
 destfile = codecs.open('ThesaurusDeutsch.xml','w','utf-8')
 destfile.write("""<?xml version="1.0" encoding="utf-8"?>
 <d:dictionary xmlns="http://www.w3.org/1999/xhtml" xmlns:d="http://www.apple.com/DTDs/DictionaryService-1.0.rng">""")
-                
+
 for id in sort_by_value(lengths):    
     destfile.write( u"""
 <d:entry id="%s" d:title="%s">
@@ -183,11 +148,12 @@ destfile.write( u"""
     <h1>OpenThesaurus Deutsch</h1>
     <div><small><b>Version: %s</b></small></div>
     <p>
-    	Dieser Thesaurus basiert auf dem Online-Thesaurus<br/>
-    	<a href="http://www.openthesaurus.de">www.openthesaurus.de</a> von Daniel Naber.
+        Dieser Thesaurus basiert auf dem Online-Thesaurus<br/>
+        <a href="http://www.openthesaurus.de">www.openthesaurus.de</a> von Daniel Naber.
     </p>
     <p>
-        Das Python-Skript zur Umwandlung der OpenThesaurus-Wortliste<br/>in ein Lexikon-Plugin wurde von Wolfgang Reszel entwickelt.
+        Das Python-Skript zur Umwandlung der OpenThesaurus-Wortliste<br/>in ein Lexikon-Plugin wurde von Wolfgang Reszel entwickelt.<br/>
+        Die Wortform-Datei (Morphologie) wurde mit dem Windows-Tool <a href="http://www.wolfganglezius.de/doku.php?id=public:cl:morphy">Morphy</a> erstellt.
     </p>
     <p>
         <b>Updates:</b> Die aktuellste Version finden Sie unter <a href="http://www.tekl.de">www.tekl.de</a>.<br/>
@@ -195,7 +161,7 @@ destfile.write( u"""
     </p>
     <p>
         <img src="Images/gplv3-88x31.png" align="left" style="padding-right:10px" alt=""/>
-        <b>Lizenz:</b><br/>
+        <b>Lizenz:</b>
         Dieses Lexikon-Plugin unterliegt der <a href="http://www.gnu.org/licenses/gpl.html">GPLv3</a><br/>
         Die Wortliste von OpenThesaurus unterliegt der 
         <a href="http://creativecommons.org/licenses/LGPL/2.1/">CC-GNU LGPL</a><br/>
