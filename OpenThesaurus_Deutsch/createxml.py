@@ -37,58 +37,64 @@ print "\nHeruntergeladene Datei wird entpackt ..."
 os.system('gzip -d -f thesaurus.txt.gz')
 
 morphology = {}
-if os.path.isfile("thesaurus.fle"):
-    print "\nMorpholgie-Datei gefunden. Auswertung ..."
-    sourcefile = codecs.open('thesaurus.fle','r','Windows-1252')
-    id = ""
-    idx = 0
-    for line in sourcefile:
-        if "nicht gefunden:" in line or line.strip() == "":
-            continue
-        if "--------------" in line:
-            id = ""
-            idx = 0
-            continue
-        if line[:4] == "GRU ":
-            continue
-        if id == "":
-            id = line.split(" ")[1].strip()
-            morphology[id] = ""
-        if u"Zusätze: " not in line and u"Präfixe: " not in line:
-            for word in line.split(" "):
-                word = word.strip()
-                if word == "":
-                    continue
-                if word not in morphology[id] and word != id:
-                    if morphology[id] == "":
-                        morphology[id] = word
-                    else:
-                        morphology[id] = morphology[id]+","+word
-        else:
-            line = line.replace(u"Zusätze: ","")
-            line = line.replace(u"Präfixe: ","")
-            for x in line.split(" "):
-                x = x.strip()
-                if x == "":
-                    continue
-                if not morphology.has_key(x+id):
-                    morphology[x+id] = ""
-                    for y in morphology[id].split(","):
-                        y = y.strip()
-                        if y == "":
-                            continue
-                        if morphology[x+id] == "":
-                            morphology[x+id] = x+y
-                        else:
-                            morphology[x+id] = morphology[x+id]+","+x+y
-        idx += 1
-    sourcefile.close()
-    morphcache = open('morphology-cache.txt','w')
-    pickle.dump(morphology,morphcache)
+if os.path.isfile("morphology-cache.txt"):
+    print "\nMorpholgie-Cache-Datei gefunden und geladen."
+    morphcache = open('morphology-cache.txt','r')
+    morphology = pickle.load(morphcache)
     morphcache.close()
+else:
+    if os.path.isfile("thesaurus.fle"):
+        print "\nMorpholgie-Datei gefunden. Auswertung ..."
+        sourcefile = codecs.open('thesaurus.fle','r','Windows-1252')
+        id = ""
+        idx = 0
+        for line in sourcefile:
+            if "nicht gefunden:" in line or line.strip() == "":
+                continue
+            if "--------------" in line:
+                id = ""
+                idx = 0
+                continue
+            if line[:4] == "GRU ":
+                continue
+            if id == "":
+                id = line.split(" ")[1].strip()
+                morphology[id] = ""
+            if u"Zusätze: " not in line and u"Präfixe: " not in line:
+                for word in line.split(" "):
+                    word = word.strip()
+                    if word == "":
+                        continue
+                    if word not in morphology[id] and word != id:
+                        if morphology[id] == "":
+                            morphology[id] = word
+                        else:
+                            morphology[id] = morphology[id]+","+word
+            else:
+                line = line.replace(u"Zusätze: ","")
+                line = line.replace(u"Präfixe: ","")
+                for x in line.split(" "):
+                    x = x.strip()
+                    if x == "":
+                        continue
+                    if not morphology.has_key(x+id):
+                        morphology[x+id] = ""
+                        for y in morphology[id].split(","):
+                            y = y.strip()
+                            if y == "":
+                                continue
+                            if morphology[x+id] == "":
+                                morphology[x+id] = x+y
+                            else:
+                                morphology[x+id] = morphology[x+id]+","+x+y
+            idx += 1
+        sourcefile.close()
+        morphcache = open('morphology-cache.txt','w')
+        pickle.dump(morphology,morphcache)
+        morphcache.close()
 
 print "\nDatei wird analysiert ..."
-
+sourcefile = codecs.open('thesaurus.txt','r','Windows-1252')
 result = {}
 dvalues = {}
 titles = {}
@@ -133,6 +139,10 @@ for line in sourcefile:
             titles[id] = element
             linkwords[id] = urllib.quote(re.sub('\([^)]+\)|{[^}]+}|\[[^\]]+\]',"",element).strip().encode("utf-8"))
             headlines[id] = re.sub('(\([^)]+\))', r'<i>\1</i>',element)
+            if morphology.has_key("id")
+                for x in morphology[id].split(","):
+                    if u'<d:index d:value="'+x.lower()+u'"' not in dvalues[id].lower():
+                        dvalues[id] = dvalues[id] + '\n<d:index d:value="'+x+u'" d:title="⇒ '+x+'"/>'
 
         dvalueSplit = dvalue.split()
         for i in dvalueSplit:
@@ -142,9 +152,14 @@ for line in sourcefile:
                     if len(devalueHyphenSplit[j]) > 1:
                         if u'<d:index d:value="'+devalueHyphenSplit[j].lower()+u'"' not in dvalues[id].lower():
                             dvalues[id] = dvalues[id] + '\n<d:index d:value="'+devalueHyphenSplit[j]+u'" d:title="⇒ '+dvalue+'"/>'
+                    # if morphology.has_key("id")
+                    #     for x in morphology[id].split(","):
+                    #         if u'<d:index d:value="'+x.lower()+u'"' not in dvalues[id].lower():
+                    #             dvalues[id] = dvalues[id] + '\n<d:index d:value="'+x+u'" d:title="⇒ '+x+'"/>'
                 if '<d:index d:value="'+i.lower()+'"' not in dvalues[id].lower():
                     if i[0] != "-" and i[len(i)-1] != "-":
                         dvalues[id] = dvalues[id] + '\n<d:index d:value="'+i+u'" d:title="⇒ '+dvalue+'"/>'
+        
 
 sourcefile.close()
 
