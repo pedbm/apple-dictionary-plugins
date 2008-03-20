@@ -58,7 +58,7 @@ for line in ftypesFile:
     id = cells[0][2:].strip() 
     id = re.sub("\[|\]","",id).strip()
     dvalue = id
-    id = re.sub('(?u)[\"<>, ]','_',id)
+    id = re.sub('(?u)[\"<>, ]','_',id.lower())
     id = re.sub("(?u)_+","_",id)
     id = re.sub("(?u)(.)_$","\\1",id)
 
