@@ -187,12 +187,12 @@ for id in sort_by_value(lengths):
 %s
 %s
 <div class="copyright" d:priority="2">
-<span><a href="http://www.beolingus.de/dings.cgi?query=%s">aus BeoLingus.de</a> · © 2008 TU Chemnitz</span></div>
+<span><a href="http://www.beolingus.de/dings.cgi?query=%s">Aus BeoLingus.de</a> · © 2008 TU Chemnitz</span></div>
 </d:entry>""" % (id,titles[id],dvalues[id],formatted[id], result[id], linkwords[id]) )
         
 destfile.write( u"""
 <d:entry id="front_back_matter" d:title="Voderer/Hinterer Teil">
-    <h1><b>Wörterbuch %s</b></h1>
+    <h1><b>BeoLingus %s</b></h1>
     <div><small><b>Version: %s</b></small></div>
     <p>
         <img src="Images/beolingus.gif" align="right" style="padding-left:10px" alt=""/>
@@ -207,8 +207,10 @@ destfile.write( u"""
         Support und den Quellcode finden Sie unter <a href="http://apple-dictionary-plugins.googlecode.com"><b>apple-dictionary-plugins.googlecode.com</b></a>.
     </p>
     <p>
+        <img src="Images/gplv3-88x31.png" align="left" style="padding-right:10px" alt=""/>
         <b>Lizenz:</b><br/>
-        Die Wortliste und dieses Lexikon-Plugin unterliegen der
+        Dieses Lexikon-Plugin unterliegt der <a href="http://www.gnu.org/licenses/gpl.html">GPLv3</a><br/>
+        Die Wortliste von BeoLingus unterliegt der 
         <a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt">GNU public license v2</a><br/>
     </p>
 </d:entry>
@@ -220,7 +222,7 @@ os.system('rm '+dict+'.txt')
 
 print "\nVersionsnummer in %s.pmdoc-Datei und finishup_xx.rtfd wird angepasst ..." % (dictFull)
 
-rtfFiles = [dictFull+'.pmdoc/index.xml','finishup_de.rtfd/TXT.rtf','finishup_en.rtfd/TXT.rtf']
+rtfFiles = [dictFull+'.pmdoc/index.xml','finishup_de.rtfd/TXT.rtf','finishup_en.rtfd/TXT.rtf','gplv3_de.rtf','gplv3_en.rtf']
 for filename in rtfFiles:
     pmdocFile = codecs.open(filename,'r','UTF-8')
     pmdoc = pmdocFile.read()

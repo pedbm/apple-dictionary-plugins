@@ -4,7 +4,7 @@
 # DIESES SCRIPT BITTE NICHT MANUELL AUSFÜHREN
 # ES WIRD PER "MAKE" AUFGERUFEN
 
-import os,sys,time,re,codecs,datetime,urllib,string,subprocess
+import os,sys,time,re,codecs,datetime,urllib,string,subprocess,pickle
 
 def progress(a,b,c):
     sys.stdout.write(".")
@@ -36,8 +36,58 @@ if string.find(str(download[1]),"Error") > 0:
 print "\nHeruntergeladene Datei wird entpackt ..."    
 os.system('gzip -d -f thesaurus.txt.gz')
 
+morphology = {}
+if os.path.isfile("thesaurus.fle"):
+    print "\nMorpholgie-Datei gefunden. Auswertung ..."
+    sourcefile = codecs.open('thesaurus.fle','r','Windows-1252')
+    id = ""
+    idx = 0
+    for line in sourcefile:
+        if "nicht gefunden:" in line or line.strip() == "":
+            continue
+        if "--------------" in line:
+            id = ""
+            idx = 0
+            continue
+        if line[:4] == "GRU ":
+            continue
+        if id == "":
+            id = line.split(" ")[1].strip()
+            morphology[id] = ""
+        if u"Zusätze: " not in line and u"Präfixe: " not in line:
+            for word in line.split(" "):
+                word = word.strip()
+                if word == "":
+                    continue
+                if word not in morphology[id] and word != id:
+                    if morphology[id] == "":
+                        morphology[id] = word
+                    else:
+                        morphology[id] = morphology[id]+","+word
+        else:
+            line = line.replace(u"Zusätze: ","")
+            line = line.replace(u"Präfixe: ","")
+            for x in line.split(" "):
+                x = x.strip()
+                if x == "":
+                    continue
+                if not morphology.has_key(x+id):
+                    morphology[x+id] = ""
+                    for y in morphology[id].split(","):
+                        y = y.strip()
+                        if y == "":
+                            continue
+                        if morphology[x+id] == "":
+                            morphology[x+id] = x+y
+                        else:
+                            morphology[x+id] = morphology[x+id]+","+x+y
+        idx += 1
+    sourcefile.close()
+    morphcache = open('morphology-cache.txt','w')
+    pickle.dump(morphology,morphcache)
+    morphcache.close()
+
 print "\nDatei wird analysiert ..."
-sourcefile = codecs.open('thesaurus.txt','r','Windows-1252')
 
 result = {}
 dvalues = {}
@@ -110,12 +160,12 @@ for id in sort_by_value(lengths):
 <h2 d:pr="1">%s</h2>
 %s
 <div class="copyright" d:priority="2">
-<span><a href="http://www.openthesaurus.de/overview.php?word=%s">aus OpenThesaurus.de</a> · © 2008 Daniel Naber</span></div>
+<span><a href="http://www.openthesaurus.de/overview.php?word=%s">Aus OpenThesaurus.de</a> · © 2008 Daniel Naber</span></div>
 </d:entry>""" % (id,titles[id],dvalues[id],headlines[id], result[id], linkwords[id] ) ) 
         
 destfile.write( u"""
 <d:entry id="front_back_matter" d:title="Voderer/Hinterer Teil">
-    <h1>Thesaurus Deutsch</h1>
+    <h1>OpenThesaurus Deutsch</h1>
     <div><small><b>Version: %s</b></small></div>
     <p>
     	Dieser Thesaurus basiert auf dem Online-Thesaurus<br/>
@@ -129,10 +179,11 @@ destfile.write( u"""
         Support und den Quellcode finden Sie unter <a href="http://apple-dictionary-plugins.googlecode.com"><b>apple-dictionary-plugins.googlecode.com</b></a>.
     </p>
     <p>
-        <img src="Images/cc-LGPL-a.png" align="left" style="padding-right:10px" alt=""/>
+        <img src="Images/gplv3-88x31.png" align="left" style="padding-right:10px" alt=""/>
         <b>Lizenz:</b><br/>
-        Die Wortliste und dieses Lexikon-Plugin unterliegen der
-        <a href="http://creativecommons.org/licenses/LGPL/2.1/">CC-GNU LPGL</a><br/>
+        Dieses Lexikon-Plugin unterliegt der <a href="http://www.gnu.org/licenses/gpl.html">GPLv3</a><br/>
+        Die Wortliste von OpenThesaurus unterliegt der 
+        <a href="http://creativecommons.org/licenses/LGPL/2.1/">CC-GNU LGPL</a><br/>
     </p>
 </d:entry>
 </d:dictionary>""" % (marketingVersion )  )
@@ -142,7 +193,7 @@ print "\nHeruntergeladene Datei wird gelöscht ..."
 os.system("rm thesaurus.txt")
 
 print "\nVersionsnummer in ThesaurusDeutsch.pmdoc und finishup_xx.rtfd wird angepasst ..."
-rtfFiles = ['ThesaurusDeutsch.pmdoc/index.xml','finishup_de.rtfd/TXT.rtf','finishup_en.rtfd/TXT.rtf']
+rtfFiles = ['ThesaurusDeutsch.pmdoc/index.xml','finishup_de.rtfd/TXT.rtf','finishup_en.rtfd/TXT.rtf','gplv3_de.rtf','gplv3_en.rtf']
 for filename in rtfFiles:
     pmdocFile = codecs.open(filename,'r','UTF-8')
     pmdoc = pmdocFile.read()
