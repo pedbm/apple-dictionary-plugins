@@ -11,10 +11,6 @@ h1,h2	{
 	vertical-align:top;
 }
 
-h1 b {
-  padding-right: 0.2em;
-}
-
 p {
     margin: 0 0 0.4em 1em;
     padding: 0;
@@ -28,14 +24,12 @@ i {
     font-weight:normal;
     font-size:80%;
     vertical-align: baseline;
-	padding-right:0.2em;
 }
 
 .s1 {
     font-size: 80%;
     font-weight: normal;
     vertical-align: baseline;
-    padding-left: 0.1em;
 }
 
 .s2	{
@@ -55,16 +49,25 @@ span.column {
 }
 
 .copyright {
+    font-family: "Lucida Grande";
     margin-top: 1em;
     text-align:center;
-    font-size:70%;
-    color:#aaa;
+    font-size:50%;
+    color:#ccc;
     border-top: #eee 1px solid;
 }
 .copyright span {
-    color:#aaa;
+    color:#ccc;
 }
 
 .copyright span a {
-    color:#aaa !important;
+    color:#ccc !important;
+}
+
+.seealso {
+    font-size:80%;
+    color:gray;
+    margin:1em 1em 0.5em 1em;
+    border-top: 1px solid #ccc;
+    padding: 0.1em 0.3em 0.1em 0.3em;
 }
