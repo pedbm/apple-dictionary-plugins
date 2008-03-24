@@ -4,7 +4,7 @@
 # DIESES SCRIPT BITTE NICHT MANUELL AUSFÜHREN
 # ES WIRD PER "MAKE" AUFGERUFEN
 
-import os,sys,time,re,codecs,datetime,urllib,string,subprocess,pickle
+import os,sys,time,re,codecs,datetime,urllib,string,subprocess,pickle,email,time
 
 def progress(a,b,c):
     sys.stdout.write(".")
@@ -15,11 +15,20 @@ def sort_by_value(d):
     backitems=[ [v[1],v[0]] for v in items]
     backitems.sort()
     return [ backitems[i][1] for i in range(0,len(backitems))]
+
+def normalize(s):
+    s = s.replace(u"ä","a")
+    s = s.replace(u"ö","o")
+    s = s.replace(u"ü","u")
+    s = s.replace(u"Ä","A")
+    s = s.replace(u"Ö","O")
+    s = s.replace(u"Ü","U")
+    return s
     
 os.system("clear")
 
 print "Lexikon-Plugin auf Basis von OpenThesaurus.de"
-print "CreateXML v0.7 von Wolfgang Reszel, 2008-03-20"
+print "CreateXML v0.7 von Wolfgang Reszel, 2008-03-24"
 print
 morphology = {}
 for file in ["morphology-cache.txt","../Morphologie_Deutsch/morphology-cache.txt"]:
@@ -42,6 +51,9 @@ if string.find(str(download[1]),"Error") > 0:
     print download[1]
     exit()
 
+timestamp = re.sub("(?s)^.*Last-Modified: ([^\n]+)\n.*$","\\1",str(download[1]))
+downloadfiledate = datetime.datetime.fromtimestamp(time.mktime(email.Utils.parsedate(timestamp))).strftime("%d.%m.%Y")
+
 print "\nHeruntergeladene Datei wird entpackt ..."
 os.system('gzip -d -f thesaurus.txt.gz')
 
@@ -57,6 +69,7 @@ linkwords = {}
 for line in sourcefile:
     if line[0] == "#":
         continue
+
     line = line.strip()
     line = line.replace("&","&amp;")
     line = line.replace("<","&lt;")
@@ -74,7 +87,8 @@ for line in sourcefile:
                 translations = translations + "; " + i
 
         translations = translations[2:len(translations)]
-        translations = re.sub('(\([^)]+\))', r'<i>\1</i>',translations)
+        translations = re.sub('(\([^)]+\))', '<i>\\1</i>',translations)
+        translations = re.sub('> *<',u'> <',translations).strip() # six-per-em space U+2006
 
         id = re.sub('(?u)[\"<>, ]','_',element.lower())
         id = re.sub("(?u)_+","_",id)
@@ -83,19 +97,21 @@ for line in sourcefile:
         dvalue = re.sub('\([^)]+\)',"",element).strip()
                       
         if result.has_key(id):
-            result[id] = result[id] + "\n<p>" + translations + "</p>"
+            if translations.lower() not in result[id].lower():
+                result[id] = result[id] + "\n<p>" + translations + "</p>"
         else:
             lengths[id] = len(id)
             result[id] = "<p>" + translations + "</p>"
             dvalues[id] = u'<d:index d:value="'+dvalue+u'" d:title="'+dvalue+u'"/>'
             titles[id] = element
             linkwords[id] = urllib.quote(re.sub('\([^)]+\)|{[^}]+}|\[[^\]]+\]',"",element).strip().encode("utf-8"))
-            headlines[id] = re.sub('(\([^)]+\))', r'<i>\1</i>',element)
+            headlines[id] = re.sub('(\([^)]+\))', '<i>\\1</i>',element)
+            headlines[id] = re.sub('> *<',u'> <',headlines[id]).strip() # six-per-em space U+2006
             if morphology.has_key(dvalue):
                 for x in morphology[dvalue].split(","):
-                    if u'<d:index d:value="'+x.lower()+u'"' not in dvalues[id].lower():
+                    if u'<d:index d:value="'+normalize(x.lower())+u'"' not in normalize(dvalues[id].lower()) and normalize(x.lower()) != normalize(dvalue.lower()):
                         if x[:len(dvalue)].lower() == dvalue.lower():
-                            dvalues[id] = dvalues[id] + '\n<d:index d:value="'+x+u'" d:title="'+dvalue+'"/>'
+                            dvalues[id] = dvalues[id] + '\n<d:index d:value="'+x+u'" d:title="→ '+dvalue+'"/>'
                         else:
                             dvalues[id] = dvalues[id] + '\n<d:index d:value="'+x+u'" d:title="⇒ '+dvalue+'"/>'
 
@@ -105,23 +121,24 @@ for line in sourcefile:
                 devalueHyphenSplit = i.split("-")
                 for j in range(1,len(devalueHyphenSplit)):
                     if len(devalueHyphenSplit[j]) > 1:
-                        if u'<d:index d:value="'+devalueHyphenSplit[j].lower()+u'"' not in dvalues[id].lower():
+                        if u'<d:index d:value="'+normalize(devalueHyphenSplit[j].lower())+u'"' not in normalize(dvalues[id].lower()):
                             dvalues[id] = dvalues[id] + '\n<d:index d:value="'+devalueHyphenSplit[j]+u'" d:title="⇒ '+dvalue+'"/>'
                         if morphology.has_key(devalueHyphenSplit[j]):
                             for x in morphology[devalueHyphenSplit[j]].split(","):
-                                if u'<d:index d:value="'+x.lower()+u'"' not in dvalues[id].lower():
+                                if u'<d:index d:value="'+normalize(x.lower())+u'"' not in normalize(dvalues[id].lower()) and normalize(x.lower()) != normalize(dvalue.lower()):
                                     if x[:len(dvalue)].lower() == dvalue.lower():
-                                        dvalues[id] = dvalues[id] + '\n<d:index d:value="'+x+u'" d:title="'+dvalue+'"/>'
+                                        dvalues[id] = dvalues[id] + '\n<d:index d:value="'+x+u'" d:title="→ '+dvalue+'"/>'
                                     else:
                                         dvalues[id] = dvalues[id] + '\n<d:index d:value="'+x+u'" d:title="⇒ '+dvalue+'"/>'
-                if '<d:index d:value="'+i.lower()+'"' not in dvalues[id].lower():
+                if '<d:index d:value="'+normalize(i.lower())+'"' not in normalize(dvalues[id].lower()):
                     if i[0] != "-" and i[len(i)-1] != "-":
-                        dvalues[id] = dvalues[id] + '\n<d:index d:value="'+i+u'" d:title="⇒ '+dvalue+'"/>'
+                        if dvalue[:len(i)].lower() != i.lower():
+                            dvalues[id] = dvalues[id] + '\n<d:index d:value="'+i+u'" d:title="⇒ '+dvalue+'"/>'
                         if morphology.has_key(i):
                             for x in morphology[i].split(","):
-                                if u'<d:index d:value="'+x.lower()+u'"' not in dvalues[id].lower():
+                                if u'<d:index d:value="'+normalize(x.lower())+u'"' not in normalize(dvalues[id].lower()) and normalize(x.lower()) != normalize(dvalue.lower()):
                                     if x[:len(dvalue)].lower() == dvalue.lower():
-                                        dvalues[id] = dvalues[id] + '\n<d:index d:value="'+x+u'" d:title="'+dvalue+'"/>'
+                                        dvalues[id] = dvalues[id] + '\n<d:index d:value="'+x+u'" d:title="→ '+dvalue+'"/>'
                                     else:
                                         dvalues[id] = dvalues[id] + '\n<d:index d:value="'+x+u'" d:title="⇒ '+dvalue+'"/>'
 
@@ -149,15 +166,17 @@ destfile.write( u"""
     <div><small><b>Version: %s</b></small></div>
     <p>
         Dieser Thesaurus basiert auf dem Online-Thesaurus<br/>
-        <a href="http://www.openthesaurus.de">www.openthesaurus.de</a> von Daniel Naber.
-    </p>
-    <p>
-        Das Python-Skript zur Umwandlung der OpenThesaurus-Wortliste<br/>in ein Lexikon-Plugin wurde von Wolfgang Reszel entwickelt.<br/>
-        Die Wortform-Datei (Morphologie) wurde mit dem Windows-Tool <a href="http://www.wolfganglezius.de/doku.php?id=public:cl:morphy">Morphy</a> erstellt.
+        <a href="http://www.openthesaurus.de">www.openthesaurus.de</a> von Daniel Naber. (Stand: %s)
     </p>
     <p>
         <b>Updates:</b> Die aktuellste Version finden Sie unter <a href="http://www.tekl.de">www.tekl.de</a>.<br/>
         Support und den Quellcode finden Sie unter <a href="http://apple-dictionary-plugins.googlecode.com"><b>apple-dictionary-plugins.googlecode.com</b></a>.
+    </p>
+    <p>
+        Das Python-Skript zur Umwandlung der OpenThesaurus-Wortliste<br/>in ein Lexikon-Plugin wurde von Wolfgang Reszel entwickelt.
+    </p>
+    <p>
+        Die Wortform-Datei (Morphologie), durch welche auch die Suche nach Worten im Plural möglich ist, wurde mit dem Windows-Tool <a href="http://www.wolfganglezius.de/doku.php?id=public:cl:morphy">Morphy</a> erstellt.
     </p>
     <p>
         <img src="Images/gplv3-88x31.png" align="left" style="padding-right:10px" alt=""/>
@@ -167,7 +186,7 @@ destfile.write( u"""
         <a href="http://creativecommons.org/licenses/LGPL/2.1/">CC-GNU LGPL</a><br/>
     </p>
 </d:entry>
-</d:dictionary>""" % (marketingVersion )  )
+</d:dictionary>""" % (marketingVersion, downloadfiledate )  )
 destfile.close()
 
 print "\nHeruntergeladene Datei wird gelöscht ..."
