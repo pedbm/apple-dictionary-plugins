@@ -9,9 +9,9 @@
 	<key>CFBundleName</key>
 	<string>OpenThesaurus Deutsch</string>
 	<key>CFBundleShortVersionString</key>
-	<string>v2008.03.24</string>
+	<string>v2008.04.08</string>
 	<key>CFBundleVersion</key>
-	<string>2008.03.24</string>
+	<string>2008.04.08</string>
 	<key>DCSDictionaryCopyright</key>
 	<string>Copyright © 2008 Daniel Naber, www.openthesaurus.de / Wolfgang Reszel, www.tekl.de</string>
 	<key>DCSDictionaryFrontMatterReferenceID</key>
@@ -20,5 +20,14 @@
 	<string>Wolfgang Reszel (www.tekl.de)</string>
 	<key>LSHasLocalizedDisplayName</key>
 	<true/>
+	<key>DCSDictionaryPrefsHTML</key>
+	<string>OpenThesaurus_prefs.html</string>
+	<key>DCSDictionaryXSL</key>
+	<string>OpenThesaurus.xsl</string>
+	<key>DCSDictionaryDefaultPrefs</key>
+	<dict>
+		<key>CheckForUpdates</key>
+		<string>0</string>
+	</dict>
 </dict>
 </plist>

@@ -28,7 +28,7 @@ def normalize(s):
 os.system("clear")
 
 print "Lexikon-Plugin auf Basis von OpenThesaurus.de"
-print "CreateXML v0.7 von Wolfgang Reszel, 2008-03-24"
+print "CreateXML v0.8 von Wolfgang Reszel, 2008-04-08"
 print
 morphology = {}
 for file in ["morphology-cache.txt","../Morphologie_Deutsch/morphology-cache.txt"]:
@@ -50,7 +50,7 @@ if string.find(str(download[1]),"Error") > 0:
     print "\nHerunterladen fehlgeschlagen, bitte später noch mal versuchen\n"
     print download[1]
     exit()
-
+    
 timestamp = re.sub("(?s)^.*Last-Modified: ([^\n]+)\n.*$","\\1",str(download[1]))
 downloadfiledate = datetime.datetime.fromtimestamp(time.mktime(email.Utils.parsedate(timestamp))).strftime("%d.%m.%Y")
 
@@ -157,13 +157,63 @@ for id in sort_by_value(lengths):
 <h2 d:pr="1">%s</h2>
 %s
 <div class="copyright" d:priority="2">
-<span><a href="http://www.openthesaurus.de/overview.php?word=%s">Aus OpenThesaurus.de</a> · © 2008 Daniel Naber</span></div>
+<span><a href="http://www.openthesaurus.de/overview.php?word=%s">Aus OpenThesaurus.de</a> · © 2008 Daniel Naber</span>
+<div id="CheckForUpdates2"><span id="UpdateMessage"></span><script charset="utf-8" src="u.js"></script></div>
+</div>
 </d:entry>""" % (id,titles[id],dvalues[id],headlines[id], result[id], linkwords[id] ) ) 
         
 destfile.write( u"""
 <d:entry id="front_back_matter" d:title="Voderer/Hinterer Teil">
     <h1>OpenThesaurus Deutsch</h1>
-    <div><small><b>Version: %s</b></small></div>
+    <div><small><b>Version: %s</b></small>  
+        <div id="CheckForUpdates1"><small>
+        <span id="UpdateMessage"><img src="Images/progress_indicator.gif" valign="middle" alt=""/> Nach Aktualisierung suchen ...</span>
+        <script type="text/javascript" charset="utf-8">
+        var req;
+        var currentVersion = "%s"; 
+        var updateURL = 'http://www.tekl.de/deutsch/OpenThesaurus_Deutsch.html';
+
+        window.setTimeout("loadXMLDoc(updateURL)", 500);
+
+        function loadXMLDoc(url) {
+           try {
+              req = new XMLHttpRequest();
+           } catch(e) {
+              req = false;
+           }
+           if(req) {
+              req.onreadystatechange = processReqChange;
+              req.open("GET", url, true);
+              req.send("");
+           }
+        }
+
+        function processReqChange() {
+           // only if req shows "loaded"
+           if (req.readyState == 4) {
+              // only if "OK"
+              if (req.status == 200) {
+                 newestVersion = req.responseText.match(/v\d\d\d\d.\d\d.\d\d/g);
+                 if (newestVersion != null) {
+                    newestVersion = newestVersion.toString();
+                    if (newestVersion > currentVersion) {
+                       result = '<a class="newVersion" href="'+updateURL+'">Neue Version verfügbar!</a>';
+                    } else {
+                       result = 'keine neue Version verfügbar!';
+                    }
+                 } else {
+                    result = '<em>Neuste Version kann nicht ermittelt werden!</em>';
+                 }
+              } else {
+                 result = '<em>Verbindung zu www.tekl.de fehlgeschlagen!</em>'
+              }
+              document.getElementById("UpdateMessage").innerHTML = '<img src="Images/update.gif" valign="middle" alt=""/> '+result;
+           }
+        }
+        </script>
+        </small>
+        </div>
+    </div>
     <p>
         Dieser Thesaurus basiert auf dem Online-Thesaurus<br/>
         <a href="http://www.openthesaurus.de">www.openthesaurus.de</a> von Daniel Naber. (Stand: %s)
@@ -186,7 +236,7 @@ destfile.write( u"""
         <a href="http://creativecommons.org/licenses/LGPL/2.1/">CC-GNU LGPL</a><br/>
     </p>
 </d:entry>
-</d:dictionary>""" % (marketingVersion, downloadfiledate )  )
+</d:dictionary>""" % (marketingVersion, marketingVersion, downloadfiledate )  )
 destfile.close()
 
 print "\nHeruntergeladene Datei wird gelöscht ..."
@@ -212,5 +262,15 @@ plistFile.close()
 plistFile = codecs.open('Info.plist','w','UTF-8')
 plistFile.write( plist )
 plistFile.close()
+
+print "\nVersionsnummer in u.js wird angepasst ..."
+plistFile = codecs.open('OtherResources/u.js','r','UTF-8')
+plist = plistFile.read()
+plist = re.sub("(?u)(var currentVersion = \")[^\"]+(\")", "\\g<1>"+marketingVersion+"\\2", plist) 
+plistFile.close()
+plistFile = codecs.open('OtherResources/u.js','w','UTF-8')
+plistFile.write( plist )
+plistFile.close()
+
 
 print "\nXML-Datei wird ausgewertet (Making) ...\n-----------------------------------------------------"
