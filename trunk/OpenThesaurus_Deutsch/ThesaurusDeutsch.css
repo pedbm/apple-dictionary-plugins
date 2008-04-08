@@ -54,6 +54,7 @@ span.column {
 .copyright {
     font-family: "Lucida Grande";
     margin-top: 1em;
+    line-height: 2em;
     text-align:center;
     font-size:50%;
     color:#ccc;
@@ -66,3 +67,9 @@ span.column {
 .copyright span a {
     color:#ccc !important;
 }
+
+#CheckForUpdates2 { display:inline; }
+
+a.newVersion { color: #900 !important; font-weight:bold; }
+a.newVersion:link { color: #900 !important }
+a.newVersion:visited { color: #900 !important }
