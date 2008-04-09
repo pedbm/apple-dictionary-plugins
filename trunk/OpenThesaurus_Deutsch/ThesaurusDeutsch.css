@@ -37,7 +37,7 @@ span.column {
 	padding: 0.5em;
 }
 
-.copyright {
+.c {
     font-family: "Lucida Grande";
     margin-top: 1em;
     line-height: 2em;
@@ -46,11 +46,11 @@ span.column {
     color:#ccc;
     border-top: #eee 1px solid;
 }
-.copyright span {
+.c span {
     color:#ccc;
 }
 
-.copyright span a {
+.c span a {
     color:#ccc !important;
 }
 

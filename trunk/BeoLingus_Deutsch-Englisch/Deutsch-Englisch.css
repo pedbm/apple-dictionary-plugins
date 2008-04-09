@@ -1,9 +1,6 @@
 @charset "UTF-8";
 @namespace d url(http://www.apple.com/DTDs/DictionaryService-1.0.rng);
 
-d|entry {
-}
-
 h1,h2	{
 	font-size: 130%;
 	font-weight:normal;
@@ -48,19 +45,20 @@ span.column {
 	padding: 0.5em;
 }
 
-.copyright {
+.c {
     font-family: "Lucida Grande";
     margin-top: 1em;
+    line-height: 2em;
     text-align:center;
     font-size:50%;
     color:#ccc;
     border-top: #eee 1px solid;
 }
-.copyright span {
+.c span {
     color:#ccc;
 }
 
-.copyright span a {
+.c span a {
     color:#ccc !important;
 }
 
@@ -71,3 +69,5 @@ span.column {
     border-top: 1px solid #ccc;
     padding: 0.1em 0.3em 0.1em 0.3em;
 }
+
+a.newVersion { color: #900 !important; font-weight:bold; }

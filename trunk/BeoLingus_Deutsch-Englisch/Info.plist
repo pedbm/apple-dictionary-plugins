@@ -9,9 +9,9 @@
 	<key>CFBundleName</key>
 	<string>BeoLingus Deutsch-Englisch</string>
 	<key>CFBundleShortVersionString</key>
-	<string>v2008.03.24</string>
+	<string>v2008.04.09</string>
 	<key>CFBundleVersion</key>
-	<string>2008.03.24</string>
+	<string>2008.04.09</string>
 	<key>DCSDictionaryCopyright</key>
 	<string>Copyright © 1995-2008 TU Chemnitz, www.beolingus.de / Wolfgang Reszel, www.tekl.de</string>
 	<key>DCSDictionaryFrontMatterReferenceID</key>
@@ -20,5 +20,14 @@
 	<string>Wolfgang Reszel (www.tekl.de)</string>
 	<key>LSHasLocalizedDisplayName</key>
 	<true/>
+	<key>DCSDictionaryPrefsHTML</key>
+	<string>Deutsch-Englisch_prefs.html</string>
+	<key>DCSDictionaryXSL</key>
+	<string>Deutsch-Englisch.xsl</string>
+	<key>DCSDictionaryDefaultPrefs</key>
+	<dict>
+		<key>CheckForUpdates</key>
+		<string>2</string>
+	</dict>
 </dict>
 </plist>

@@ -38,7 +38,7 @@ if len(sys.argv) == 2:
         dictAdd = " small"
 
 print "Lexikon-Plugin ("+dictFull+dictAdd+") auf Basis von Beolingus.de"
-print "CreateXML v0.9 von Wolfgang Reszel, 2008-03-24"
+print "CreateXML v1.0 von Wolfgang Reszel, 2008-04-09"
 print
 morphology = {}
 for file in ["morphology-cache.txt","../Morphologie_Deutsch/morphology-cache.txt"]:
@@ -263,20 +263,69 @@ for id in sort_by_value(lengths):
     if seealsos[id] != "":
         seealsos[id] = '<div class="seealso"><b>Siehe auch:</b> ' + seealsos[id] + '</div>'
     formatted[id] = '<h2 d:pr="1">'+formatted[id]+'</h2>'
-    destfile.write( u"""
+    destfile.write( re.sub("  +| *\n *","", u"""
 <d:entry id="%s" d:title="%s">
 %s
 %s
 %s
 %s
-<div class="copyright" d:priority="2">
-<span><a href="http://www.beolingus.de/dings.cgi?query=%s">Aus BeoLingus.de</a> · © 2008 TU Chemnitz</span></div>
-</d:entry>""" % (id,titles[id],dvalues[id],formatted[id], result[id], seealsos[id], linkwords[id]) )
+<div class="c" id="c" d:priority="2">
+<span><a href="http://www.beolingus.de/dings.cgi?query=%s">Aus BeoLingus.de</a> · © 2008 TU Chemnitz</span>
+<script id="u2" charset="utf-8" src="u.js"></script></div>
+</d:entry>""" % (id,titles[id],dvalues[id],formatted[id], result[id], seealsos[id], linkwords[id]) ) )
         
 destfile.write( u"""
 <d:entry id="front_back_matter" d:title="Voderer/Hinterer Teil">
     <h1><b>BeoLingus %s</b></h1>
-    <div><small><b>Version: %s</b></small></div>
+    <div><small><b>Version: %s</b></small>
+        <div id="u1"><small>
+        <span id="UpdateMessage"><img src="Images/progress_indicator.gif" valign="middle" alt=""/> Aktuelle Version wird ermittelt ...</span>
+        <script type="text/javascript" charset="utf-8">
+        var req;
+        var currentVersion = "%s";
+        var updateURL = 'http://www.tekl.de/deutsch/BeoLingus_Deutsch-Englisch.html';
+
+        window.setTimeout("loadXMLDoc(updateURL)", 500);
+
+        function loadXMLDoc(url) {
+           try {
+              req = new XMLHttpRequest();
+           } catch(e) {
+              req = false;
+           }
+           if(req) {
+              req.onreadystatechange = processReqChange;
+              req.open("GET", url, true);
+              req.send("");
+           }
+        }
+
+        function processReqChange() {
+           // only if req shows "loaded"
+           if (req.readyState == 4) {
+              // only if "OK"
+              if (req.status == 200) {
+                 newestVersion = req.responseText.match(/v\d\d\d\d.\d\d.\d\d/);
+                 if (newestVersion != null) {
+                    newestVersion = newestVersion.toString();
+                    if (newestVersion > currentVersion) {
+                       result = '<a class="newVersion" href="'+updateURL+'">Neue Version verfügbar!</a> ('+newestVersion+')';
+                    } else {
+                       result = 'Sie verwenden die aktuelle Version.';
+                    }
+                 } else {
+                    result = '<em>Aktuelle Version konnte nicht ermittelt werden.</em>';
+                 }
+              } else {
+                 result = '<em>Verbindung zu www.tekl.de fehlgeschlagen.</em>'
+              }
+              document.getElementById("UpdateMessage").innerHTML = '<img src="Images/update.gif" valign="middle" alt=""/> '+result;
+           }
+        }
+        </script>
+        </small>
+        </div>
+    </div>
     <p>
         <img src="Images/beolingus.gif" align="right" style="padding-left:10px" alt=""/>
         Dieses Wörterbuch basiert auf dem Online-Wörterbuch<br/>
@@ -300,7 +349,7 @@ destfile.write( u"""
         <a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt">GNU public license v2</a><br/>
     </p>
 </d:entry>
-</d:dictionary>""" % (dictFull, marketingVersion, downloadfiledate )  )
+</d:dictionary>""" % (dictFull, marketingVersion, marketingVersion, downloadfiledate )  )
 destfile.close()
 
 print "\nHeruntergeladene Datei wird gelöscht ..."
@@ -325,6 +374,15 @@ plist = re.sub("(?u)(<key>CFBundleVersion</key>\s+<string>)[^<]+(</string>)", "\
 plist = re.sub("(?u)(<key>CFBundleShortVersionString</key>\s+<string>)[^<]+(</string>)", "\\g<1>"+marketingVersion+"\\2", plist) 
 plistFile.close()
 plistFile = codecs.open('Info.plist','w','UTF-8')
+plistFile.write( plist )
+plistFile.close()
+
+print "\nVersionsnummer in u.js wird angepasst ..."
+plistFile = codecs.open('OtherResources/u.js','r','UTF-8')
+plist = plistFile.read()
+plist = re.sub("(?u)(var currentVersion = \")[^\"]+(\")", "\\g<1>"+marketingVersion+"\\2", plist) 
+plistFile.close()
+plistFile = codecs.open('OtherResources/u.js','w','UTF-8')
 plistFile.write( plist )
 plistFile.close()
 
