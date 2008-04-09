@@ -28,7 +28,7 @@ def normalize(s):
 os.system("clear")
 
 print "Lexikon-Plugin auf Basis von OpenThesaurus.de"
-print "CreateXML v0.8 von Wolfgang Reszel, 2008-04-08"
+print "CreateXML v0.8 von Wolfgang Reszel, 2008-04-09"
 print
 morphology = {}
 for file in ["morphology-cache.txt","../Morphologie_Deutsch/morphology-cache.txt"]:
@@ -156,18 +156,17 @@ for id in sort_by_value(lengths):
 %s
 <h2 d:pr="1">%s</h2>
 %s
-<div class="copyright" id="c" d:priority="2">
+<div class="c" id="c" d:priority="2">
 <span><a href="http://www.openthesaurus.de/overview.php?word=%s">Aus OpenThesaurus.de</a> · © 2008 Daniel Naber</span>
-<script id="CheckForUpdates2" charset="utf-8" src="u.js"></script>
-</div>
+<script id="u2" charset="utf-8" src="u.js"></script></div>
 </d:entry>""" % (id,titles[id],dvalues[id],headlines[id], result[id], linkwords[id] ) ) )
         
 destfile.write( u"""
 <d:entry id="front_back_matter" d:title="Voderer/Hinterer Teil">
     <h1>OpenThesaurus Deutsch</h1>
     <div><small><b>Version: %s</b></small>  
-        <div id="CheckForUpdates1"><small>
-        <span id="UpdateMessage"><img src="Images/progress_indicator.gif" valign="middle" alt=""/> Nach Aktualisierung suchen ...</span>
+        <div id="u1"><small>
+        <span id="UpdateMessage"><img src="Images/progress_indicator.gif" valign="middle" alt=""/> Aktuelle Version wird ermittelt ...</span>
         <script type="text/javascript" charset="utf-8">
         var req;
         var currentVersion = "%s";
@@ -199,13 +198,13 @@ destfile.write( u"""
                     if (newestVersion > currentVersion) {
                        result = '<a class="newVersion" href="'+updateURL+'">Neue Version verfügbar!</a> ('+newestVersion+')';
                     } else {
-                       result = 'keine neue Version verfügbar!';
+                       result = 'Sie verwenden die aktuelle Version.';
                     }
                  } else {
-                    result = '<em>Neuste Version kann nicht ermittelt werden!</em>';
+                    result = '<em>Aktuelle Version konnte nicht ermittelt werden.</em>';
                  }
               } else {
-                 result = '<em>Verbindung zu www.tekl.de fehlgeschlagen!</em>'
+                 result = '<em>Verbindung zu www.tekl.de fehlgeschlagen.</em>'
               }
               document.getElementById("UpdateMessage").innerHTML = '<img src="Images/update.gif" valign="middle" alt=""/> '+result;
            }

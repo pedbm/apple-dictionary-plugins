@@ -15,7 +15,7 @@
 	- $pronunciation is externally provided.
 -->
 
-<xsl:template match="*[@id='CheckForUpdates1']">
+<xsl:template match="*[@id='u1']">
 	<xsl:if test="$CheckForUpdates = '1'">
 		<xsl:copy>
 			<xsl:apply-templates select="@*|node()" />
@@ -28,7 +28,7 @@
 	</xsl:if>
 </xsl:template>
 
-<xsl:template match="*[@id='CheckForUpdates2']">
+<xsl:template match="*[@id='u2']">
 	<xsl:if test="$CheckForUpdates = '2'">
 		<xsl:copy>
 			<xsl:apply-templates select="@*|node()" />
