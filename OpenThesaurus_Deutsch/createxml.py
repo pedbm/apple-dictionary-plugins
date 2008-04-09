@@ -151,16 +151,16 @@ destfile.write("""<?xml version="1.0" encoding="utf-8"?>
 <d:dictionary xmlns="http://www.w3.org/1999/xhtml" xmlns:d="http://www.apple.com/DTDs/DictionaryService-1.0.rng">""")
 
 for id in sort_by_value(lengths):    
-    destfile.write( u"""
+    destfile.write( re.sub("  +| *\n *","", u"""
 <d:entry id="%s" d:title="%s">
 %s
 <h2 d:pr="1">%s</h2>
 %s
-<div class="copyright" d:priority="2">
+<div class="copyright" id="c" d:priority="2">
 <span><a href="http://www.openthesaurus.de/overview.php?word=%s">Aus OpenThesaurus.de</a> · © 2008 Daniel Naber</span>
-<div id="CheckForUpdates2"><span id="UpdateMessage"></span><script charset="utf-8" src="u.js"></script></div>
+<script id="CheckForUpdates2" charset="utf-8" src="u.js"></script>
 </div>
-</d:entry>""" % (id,titles[id],dvalues[id],headlines[id], result[id], linkwords[id] ) ) 
+</d:entry>""" % (id,titles[id],dvalues[id],headlines[id], result[id], linkwords[id] ) ) )
         
 destfile.write( u"""
 <d:entry id="front_back_matter" d:title="Voderer/Hinterer Teil">
@@ -170,7 +170,7 @@ destfile.write( u"""
         <span id="UpdateMessage"><img src="Images/progress_indicator.gif" valign="middle" alt=""/> Nach Aktualisierung suchen ...</span>
         <script type="text/javascript" charset="utf-8">
         var req;
-        var currentVersion = "%s"; 
+        var currentVersion = "%s";
         var updateURL = 'http://www.tekl.de/deutsch/OpenThesaurus_Deutsch.html';
 
         window.setTimeout("loadXMLDoc(updateURL)", 500);
@@ -193,11 +193,11 @@ destfile.write( u"""
            if (req.readyState == 4) {
               // only if "OK"
               if (req.status == 200) {
-                 newestVersion = req.responseText.match(/v\d\d\d\d.\d\d.\d\d/g);
+                 newestVersion = req.responseText.match(/v\d\d\d\d.\d\d.\d\d/);
                  if (newestVersion != null) {
                     newestVersion = newestVersion.toString();
                     if (newestVersion > currentVersion) {
-                       result = '<a class="newVersion" href="'+updateURL+'">Neue Version verfügbar!</a>';
+                       result = '<a class="newVersion" href="'+updateURL+'">Neue Version verfügbar!</a> ('+newestVersion+')';
                     } else {
                        result = 'keine neue Version verfügbar!';
                     }
@@ -236,7 +236,7 @@ destfile.write( u"""
         <a href="http://creativecommons.org/licenses/LGPL/2.1/">CC-GNU LGPL</a><br/>
     </p>
 </d:entry>
-</d:dictionary>""" % (marketingVersion, marketingVersion, downloadfiledate )  )
+</d:dictionary>""" % (marketingVersion, marketingVersion, downloadfiledate ) )
 destfile.close()
 
 print "\nHeruntergeladene Datei wird gelöscht ..."

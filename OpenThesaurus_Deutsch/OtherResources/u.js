@@ -1,4 +1,4 @@
-var currentVersion = "v2008.04.08";
+var currentVersion = "v2008.04.09";
 
 var req;
 var updateURL = 'http://www.tekl.de/deutsch/OpenThesaurus_Deutsch.html';
@@ -23,11 +23,11 @@ function processReqChange() {
    if (req.readyState == 4) {
       // only if "OK"
       if (req.status == 200) {
-         newestVersion = req.responseText.match(/v\d\d\d\d.\d\d.\d\d/g);
+         newestVersion = req.responseText.match(/v\d\d\d\d.\d\d.\d\d/);
          if (newestVersion != null) {
             newestVersion = newestVersion.toString();
             if (newestVersion > currentVersion) {
-               result = ' · <a class="newVersion" href="'+updateURL+'"><img src="Images/update.gif" valign="middle" alt=""/></a>';
+               result = '<a class="newVersion" href="'+updateURL+'"><img src="Images/update.gif" valign="middle" alt=""/></a> <a class="newVersion" href="'+updateURL+'">Neue Version verfügbar!</a>';
             } else {
                result = '';
             }
@@ -37,6 +37,6 @@ function processReqChange() {
       } else {
          result = '';
       }
-      document.getElementById("UpdateMessage").innerHTML = result;
+      if (result != '') { document.getElementById("c").innerHTML = result; }
    }
 }
