@@ -8,8 +8,8 @@
 
 # You need to edit these values.
 
-DICT_NAME		=	"BeoLingus Deutsch-Englisch"
-DICT_SRC_PATH		=	Deutsch-Englisch.xml
+DICT_NAME		=	BeoLingus Deutsch-Englisch
+DICT_SRC_PATH	=	Deutsch-Englisch.xml
 CSS_PATH		=	Deutsch-Englisch.css
 PMDOC_NAME      =   Deutsch-Englisch.pmdoc
 PLIST_PATH		=	Info.plist
@@ -39,36 +39,39 @@ RM			=	/bin/rm
 
 all:
 	@/usr/bin/python createxml.py
-	@"$(DICT_BUILD_TOOL_BIN)/build_dict.sh" $(DICT_BUILD_OPTS) $(DICT_NAME) $(DICT_SRC_PATH) $(CSS_PATH) $(PLIST_PATH)
+	@"$(DICT_BUILD_TOOL_BIN)/build_dict.sh" $(DICT_BUILD_OPTS) "$(DICT_NAME)" $(DICT_SRC_PATH) $(CSS_PATH) $(PLIST_PATH)
 	@echo "Done."
 	@echo "Use 'sudo make install' to install the dictionary or 'make package' to create the Install Package."
 
 make:
-	@"$(DICT_BUILD_TOOL_BIN)/build_dict.sh" $(DICT_BUILD_OPTS) $(DICT_NAME) $(DICT_SRC_PATH) $(CSS_PATH) $(PLIST_PATH)
+	@"$(DICT_BUILD_TOOL_BIN)/build_dict.sh" $(DICT_BUILD_OPTS) "$(DICT_NAME)" $(DICT_SRC_PATH) $(CSS_PATH) $(PLIST_PATH)
 	@echo "Done."
 
 smallpackage:
 	@/usr/bin/python createxml.py small
-	@"$(DICT_BUILD_TOOL_BIN)/build_dict.sh" $(DICT_BUILD_OPTS) $(DICT_NAME) $(DICT_SRC_PATH) $(CSS_PATH) $(PLIST_PATH)
+	@"$(DICT_BUILD_TOOL_BIN)/build_dict.sh" $(DICT_BUILD_OPTS) "$(DICT_NAME)" $(DICT_SRC_PATH) $(CSS_PATH) $(PLIST_PATH)
+
 	@echo "- Creating Install Package."
-	@/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker -d $(PMDOC_NAME) -o $(DICT_NAME)\ small\ $(DATE).pkg
-	@echo "- Zipping Install Package."
-	@zip $(DICT_NAME)\ $(DATE).zip -9 -o $(DICT_NAME)\ $(DATE).pkg 
+	@/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker -d $(PMDOC_NAME) -o "$(DICT_NAME) $(DATE).pkg" --filter '/\.svn$$'
+	@echo "- Creating internet-enabled disk image."
+	@hdiutil create -ov -format UDBZ -layout NONE -srcdir "$(DICT_NAME) $(DATE).pkg" "$(DICT_NAME) $(DATE).dmg" -volname "$(DICT_NAME)"
+	@hdiutil internet-enable "$(DICT_NAME) $(DATE).dmg"
 	@echo "Done."
 	@echo "Execute '$(DICT_NAME) $(DATE).pkg' to install the dictionary."
 
 package:
 	@echo "- Creating Install Package."
-	@/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker -d $(PMDOC_NAME) -o $(DICT_NAME)\ $(DATE).pkg
-	@echo "- Zipping Install Package."
-	@zip $(DICT_NAME)\ $(DATE).zip -9 -o $(DICT_NAME)\ $(DATE).pkg 
+	@/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker -d $(PMDOC_NAME) -o "$(DICT_NAME) $(DATE).pkg" --filter '/\.svn$$'
+	@echo "- Creating internet-enabled disk image."
+	@hdiutil create -ov -format UDBZ -layout NONE -srcdir "$(DICT_NAME) $(DATE).pkg" "$(DICT_NAME) $(DATE).dmg" -volname "$(DICT_NAME)"
+	@hdiutil internet-enable "$(DICT_NAME) $(DATE).dmg"
 	@echo "Done."
 	@echo "Execute '$(DICT_NAME) $(DATE).pkg' to install the dictionary."
 
 install:
 	@echo "Installing into $(DESTINATION_FOLDER)".
 	@mkdir -p $(DESTINATION_FOLDER)
-	@ditto --noextattr --norsrc $(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary  $(DESTINATION_FOLDER)/$(DICT_NAME).dictionary
+	@ditto --noextattr --norsrc "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary" "$(DESTINATION_FOLDER)/$(DICT_NAME).dictionary"
 	@touch $(DESTINATION_FOLDER)
 	@echo "Done."
 	@echo "To test the new dictionary, try Dictionary.app."
