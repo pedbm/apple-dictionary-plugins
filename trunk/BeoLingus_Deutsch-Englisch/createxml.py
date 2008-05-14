@@ -38,7 +38,7 @@ if len(sys.argv) == 2:
         dictAdd = " small"
 
 print "Lexikon-Plugin ("+dictFull+dictAdd+") auf Basis von Beolingus.de"
-print "CreateXML v1.0 von Wolfgang Reszel, 2008-04-09"
+print "CreateXML v1.1 von Wolfgang Reszel, 2008-05-14"
 print
 morphology = {}
 for file in ["morphology-cache.txt","../Morphologie_Deutsch/morphology-cache.txt"]:
@@ -269,7 +269,7 @@ for id in sort_by_value(lengths):
 %s
 %s
 %s
-<div class="c" id="c" d:priority="2">
+<div id="c" style="display:none" d:priority="2">
 <span><a href="http://www.beolingus.de/dings.cgi?query=%s">Aus BeoLingus.de</a> · © 2008 TU Chemnitz</span>
 <script id="u2" charset="utf-8" src="u.js"></script></div>
 </d:entry>""" % (id,titles[id],dvalues[id],formatted[id], result[id], seealsos[id], linkwords[id]) ) )

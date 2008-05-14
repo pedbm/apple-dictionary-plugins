@@ -61,7 +61,7 @@ package:
 finish:
 	@echo "- Finishing internet-enabled disk image."
 	@hdiutil eject "/Volumes/$(DICT_NAME)"
-	@hdiutil convert -format UDBZ DMG.sparseimage -o "$(DICT_NAME) $(DATE).dmg"
+	@hdiutil convert -ov -format UDBZ DMG.sparseimage -o "$(DICT_NAME) $(DATE).dmg"
 	@hdiutil internet-enable "$(DICT_NAME) $(DATE).dmg"
 	@rm DMG.sparseimage
 	@echo "Done."
