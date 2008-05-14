@@ -156,7 +156,7 @@ for id in sort_by_value(lengths):
 %s
 <h2 d:pr="1">%s</h2>
 %s
-<div class="c" id="c" d:priority="2">
+<div id="c" style="display:none" d:priority="2">
 <span><a href="http://www.openthesaurus.de/overview.php?word=%s">Aus OpenThesaurus.de</a> · © 2008 Daniel Naber</span>
 <script id="u2" charset="utf-8" src="u.js"></script></div>
 </d:entry>""" % (id,titles[id],dvalues[id],headlines[id], result[id], linkwords[id] ) ) )

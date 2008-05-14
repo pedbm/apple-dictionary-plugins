@@ -15,6 +15,14 @@
 	- $pronunciation is externally provided.
 -->
 
+<xsl:template match="*[@id='c']">
+	<xsl:if test="$ShowCopyright = '1'">
+		<xsl:copy>
+			<xsl:attribute name="style" select="@*|node()">display:block</xsl:attribute>
+			<xsl:apply-templates select="@*|node()" />
+		</xsl:copy>
+	</xsl:if>
+</xsl:template>
 <xsl:template match="*[@id='u1']">
 	<xsl:if test="$CheckForUpdates = '1'">
 		<xsl:copy>
@@ -27,7 +35,6 @@
 		</xsl:copy>
 	</xsl:if>
 </xsl:template>
-
 <xsl:template match="*[@id='u2']">
 	<xsl:if test="$CheckForUpdates = '2'">
 		<xsl:copy>
