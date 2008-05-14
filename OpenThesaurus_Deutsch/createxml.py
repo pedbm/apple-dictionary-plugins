@@ -28,7 +28,7 @@ def normalize(s):
 os.system("clear")
 
 print "Lexikon-Plugin auf Basis von OpenThesaurus.de"
-print "CreateXML v0.8 von Wolfgang Reszel, 2008-04-09"
+print "CreateXML v0.9 von Wolfgang Reszel, 2008-05-14"
 print
 morphology = {}
 for file in ["morphology-cache.txt","../Morphologie_Deutsch/morphology-cache.txt"]:

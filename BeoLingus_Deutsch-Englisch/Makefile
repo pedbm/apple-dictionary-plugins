@@ -61,12 +61,22 @@ smallpackage:
 
 package:
 	@echo "- Creating Install Package."
-	@/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker -d $(PMDOC_NAME) -o "$(DICT_NAME) $(DATE).pkg" --filter '/\.svn$$'
-	@echo "- Creating internet-enabled disk image."
-	@hdiutil create -ov -format UDBZ -layout NONE -srcdir "$(DICT_NAME) $(DATE).pkg" "$(DICT_NAME) $(DATE).dmg" -volname "$(DICT_NAME)"
-	@hdiutil internet-enable "$(DICT_NAME) $(DATE).dmg"
+	@hdiutil create -type SPARSE -ov -fs HFS+ -attach -noscrub -layout NONE "DMG.sparseimage" -volname "$(DICT_NAME)"
+	@mkdir -p "/Volumes/$(DICT_NAME)/.bg"
+	@cp dmg.background.png "/Volumes/$(DICT_NAME)/.bg/background.png"
+	@cp dmg.DS_Store "/Volumes/$(DICT_NAME)/.DS_Store"
+	@/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker -d $(PMDOC_NAME) -o "/Volumes/$(DICT_NAME)/$(DICT_NAME) $(DATE).pkg" --filter '/\.svn$$'
 	@echo "Done."
-	@echo "Execute '$(DICT_NAME) $(DATE).pkg' to install the dictionary."
+	@echo "Position the icon and type 'make finish'."
+	@open "/Volumes/$(DICT_NAME)"
+
+finish:
+	@echo "- Finishing internet-enabled disk image."
+	@hdiutil eject "/Volumes/$(DICT_NAME)"
+	@hdiutil convert -ov -format UDBZ DMG.sparseimage -o "$(DICT_NAME) $(DATE).dmg"
+	@hdiutil internet-enable "$(DICT_NAME) $(DATE).dmg"
+	@rm DMG.sparseimage
+	@echo "Done."
 
 install:
 	@echo "Installing into $(DESTINATION_FOLDER)".
