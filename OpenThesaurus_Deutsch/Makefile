@@ -53,10 +53,28 @@ package:
 	@mkdir -p "/Volumes/$(DICT_NAME)/.bg"
 	@cp dmg.background.png "/Volumes/$(DICT_NAME)/.bg/background.png"
 	@cp dmg.DS_Store "/Volumes/$(DICT_NAME)/.DS_Store"
+	@cp dmg.VolumeIcon.icns "/Volumes/$(DICT_NAME)/.VolumeIcon.icns"
+	@SetFile -a C "/Volumes/$(DICT_NAME)/"
 	@/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker -d $(PMDOC_NAME) -o "/Volumes/$(DICT_NAME)/$(DICT_NAME) $(DATE).pkg" --filter '/\.svn$$'
+	@osascript -e 'tell application "Finder" to open "$(DICT_NAME):"'
+	@osascript -e 'tell application "Finder" to set background picture of (icon view options of Finder window 1) to "$(DICT_NAME):.bg:background.png"'
+	@osascript -e 'tell application "Finder" to set toolbar visible of Finder window 1 to false'
+	@osascript -e 'tell application "Finder" to set bounds of Finder window 1 to {100, 100, 660, 470}'
+	@osascript -e 'tell application "Finder" to set arrangement of icon view options of Finder window 1 to not arranged'
+	@osascript -e 'tell application "Finder" to set position of item 1 of Finder window 1 to {131, 159}'
+	@osascript -e 'tell application "Finder" to set current view of Finder window 1 to icon view'
+	@osascript -e 'tell application "Finder" to set icon size of icon view options of Finder window 1 to 128'
+	@osascript -e 'tell application "Finder" to close Finder window 1'
+	@osascript -e 'tell application "Finder" to delay 3'
+	@osascript -e 'tell application "Finder" to open "$(DICT_NAME):"'
+	@osascript -e 'tell application "Finder" to close Finder window 1'
+	@osascript -e 'tell application "Finder" to delay 3'
+	@echo "- Finishing internet-enabled disk image."
+	@hdiutil eject "/Volumes/$(DICT_NAME)"
+	@hdiutil convert -ov -format UDBZ DMG.sparseimage -o "$(DICT_NAME) $(DATE).dmg"
+	@hdiutil internet-enable "$(DICT_NAME) $(DATE).dmg"
+	@rm DMG.sparseimage
 	@echo "Done."
-	@echo "Position the icon and type 'make finish'."
-	@open "/Volumes/$(DICT_NAME)"
 
 delivery:
 	@echo "- Creating delivery package."
@@ -65,18 +83,17 @@ delivery:
 	@cp -R "./objects/OpenThesaurus Deutsch.dictionary" "/Volumes/$(DICT_NAME) $(DATE)"
 	@cp Readme.rtf "/Volumes/$(DICT_NAME) $(DATE)"
 	@cp Liesmich.rtf "/Volumes/$(DICT_NAME) $(DATE)"
-	osascript -e 'tell application "Finder" to make new alias file at ("$(DICT_NAME) " & do shell script "date +v%Y.%m.%d") to POSIX file "/Library/Dictionaries"'
+	@cp dmg.VolumeIcon.icns "/Volumes/$(DICT_NAME) $(DATE)/.VolumeIcon.icns"
+	@SetFile -a C "/Volumes/$(DICT_NAME) $(DATE)/"
+	@osascript -e 'tell application "Finder" to make new alias file at ("$(DICT_NAME) " & do shell script "date +v%Y.%m.%d") to POSIX file "/Library/Dictionaries"'
 	@cp dmg.background.png "/Volumes/$(DICT_NAME) $(DATE)/.bg/background.png"
 	@cp dmg.DS_Store "/Volumes/$(DICT_NAME) $(DATE)/.DS_Store"
-	@echo "Done."
-	@echo "Position the icon and type 'make finish'."
-	@open "/Volumes/$(DICT_NAME) $(DATE)"
-
-finish:
-	@echo "- Finishing internet-enabled disk image."
-	@hdiutil eject "/Volumes/$(DICT_NAME)"
+	@osascript -e 'tell application "Finder" to open "$(DICT_NAME) " & do shell script "date +v%Y.%m.%d" & ":"'
+	@osascript -e 'tell application "Finder" to set background picture of (icon view options of window 1) to "$(DICT_NAME) " & do shell script "date +v%Y.%m.%d" & ":.bg:background.png"'
+	@osascript -e 'tell application "Finder" to close window 1'
+	@echo "- Finishing disk image."
+	@hdiutil eject "/Volumes/$(DICT_NAME) $(DATE)"
 	@hdiutil convert -ov -format UDBZ DMG.sparseimage -o "$(DICT_NAME) $(DATE).dmg"
-	@hdiutil internet-enable "$(DICT_NAME) $(DATE).dmg"
 	@rm DMG.sparseimage
 	@echo "Done."
 
