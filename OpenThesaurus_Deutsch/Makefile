@@ -48,7 +48,7 @@ make:
 	@echo "Done."
 
 package:
-	@echo "- Creating Install Package."
+	@echo "- Creating install package."
 	@hdiutil create -type SPARSE -ov -fs HFS+ -attach -noscrub -layout NONE "DMG.sparseimage" -volname "$(DICT_NAME)"
 	@mkdir -p "/Volumes/$(DICT_NAME)/.bg"
 	@cp dmg.background.png "/Volumes/$(DICT_NAME)/.bg/background.png"
@@ -57,7 +57,21 @@ package:
 	@echo "Done."
 	@echo "Position the icon and type 'make finish'."
 	@open "/Volumes/$(DICT_NAME)"
-	
+
+delivery:
+	@echo "- Creating delivery package."
+	@hdiutil create -type SPARSE -ov -fs HFS+ -attach -noscrub -layout NONE "DMG.sparseimage" -volname "$(DICT_NAME) $(DATE)"
+	@mkdir -p "/Volumes/$(DICT_NAME) $(DATE)/.bg"
+	@cp -R "./objects/OpenThesaurus Deutsch.dictionary" "/Volumes/$(DICT_NAME) $(DATE)"
+	@cp Readme.rtf "/Volumes/$(DICT_NAME) $(DATE)"
+	@cp Liesmich.rtf "/Volumes/$(DICT_NAME) $(DATE)"
+	osascript -e 'tell application "Finder" to make new alias file at ("$(DICT_NAME) " & do shell script "date +v%Y.%m.%d") to POSIX file "/Library/Dictionaries"'
+	@cp dmg.background.png "/Volumes/$(DICT_NAME) $(DATE)/.bg/background.png"
+	@cp dmg.DS_Store "/Volumes/$(DICT_NAME) $(DATE)/.DS_Store"
+	@echo "Done."
+	@echo "Position the icon and type 'make finish'."
+	@open "/Volumes/$(DICT_NAME) $(DATE)"
+
 finish:
 	@echo "- Finishing internet-enabled disk image."
 	@hdiutil eject "/Volumes/$(DICT_NAME)"
