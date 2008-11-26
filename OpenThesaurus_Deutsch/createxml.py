@@ -208,10 +208,10 @@ destfile.write( u"""
                     if (newestVersion > currentVersion) {
                        result = '<a class="newVersion" href="'+updateURL+'">Neue Version verfügbar!</a> ('+newestVersion+')';
                     } else {
-                       result = 'Sie verwenden die aktuelle Version.';
+                       result = 'Sie verwenden die aktuellste Version.';
                     }
                  } else {
-                    result = '<em>Aktuelle Version konnte nicht ermittelt werden.</em>';
+                    result = '<em>Aktuellste Version konnte nicht ermittelt werden.</em>';
                  }
               } else {
                  result = '<em>Verbindung zu www.tekl.de fehlgeschlagen.</em>'
