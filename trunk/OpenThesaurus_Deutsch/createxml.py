@@ -28,7 +28,7 @@ def normalize(s):
 os.system("clear")
 
 print "Lexikon-Plugin auf Basis von OpenThesaurus.de"
-print "CreateXML v0.9 von Wolfgang Reszel, 2008-05-14"
+print "CreateXML v1.0 von Wolfgang Reszel, 2008-09-26"
 print
 morphology = {}
 for file in ["morphology-cache.txt","../Morphologie_Deutsch/morphology-cache.txt"]:
@@ -65,25 +65,35 @@ titles = {}
 headlines = {}
 lengths = {}
 linkwords = {}
+wordcount = 0
 
 for line in sourcefile:
     if line[0] == "#":
         continue
 
     line = line.strip()
-    line = line.replace("&","&amp;")
-    line = line.replace("<","&lt;")
-    line = line.replace(">","&gt;")
+    if '"' in line:
+        line = re.sub(';([^;"]+) "([^;"]+)"([^;]*);',";\\1 \\2\\3;\\2\\3;", line)
+
     elements = line.split(";")
 
     for element in elements:
         if element == "":
             continue
+
+        wordcount+=1
+
+        element = element.replace("&","&amp;")
+        element = element.replace("<","&lt;")
+        element = element.replace(">","&gt;")
         translations = ""
         for i in elements:
             if i == "":
                 continue
             if i != element:
+                i = i.replace("&","&amp;")
+                i = i.replace("<","&lt;")
+                i = i.replace(">","&gt;")
                 translations = translations + "; " + i
 
         translations = translations[2:len(translations)]
@@ -215,7 +225,7 @@ destfile.write( u"""
     </div>
     <p>
         Dieser Thesaurus basiert auf dem Online-Thesaurus<br/>
-        <a href="http://www.openthesaurus.de">www.openthesaurus.de</a> von Daniel Naber. (Stand: %s)
+        <a href="http://www.openthesaurus.de">www.openthesaurus.de</a> von Daniel Naber. (Stand: %s, %s Wörter)
     </p>
     <p>
         <b>Updates:</b> Die aktuellste Version finden Sie unter <a href="http://www.tekl.de">www.tekl.de</a>.<br/>
@@ -235,7 +245,7 @@ destfile.write( u"""
         <a href="http://creativecommons.org/licenses/LGPL/2.1/">CC-GNU LGPL</a><br/>
     </p>
 </d:entry>
-</d:dictionary>""" % (marketingVersion, marketingVersion, downloadfiledate ) )
+</d:dictionary>""" % (marketingVersion, marketingVersion, downloadfiledate, wordcount ) )
 destfile.close()
 
 print "\nHeruntergeladene Datei wird gelöscht ..."

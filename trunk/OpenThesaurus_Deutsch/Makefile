@@ -55,7 +55,7 @@ package:
 	@cp dmg.DS_Store "/Volumes/$(DICT_NAME)/.DS_Store"
 	@cp dmg.VolumeIcon.icns "/Volumes/$(DICT_NAME)/.VolumeIcon.icns"
 	@SetFile -a C "/Volumes/$(DICT_NAME)/"
-	@/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker -d $(PMDOC_NAME) -o "/Volumes/$(DICT_NAME)/$(DICT_NAME) $(DATE).pkg" --filter '/\.svn$$'
+	@/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker -d $(PMDOC_NAME) -i de.tekl.dictionary.openThesaurusDeutsch.pkg -o "/Volumes/$(DICT_NAME)/$(DICT_NAME) $(DATE).pkg" --filter '/\.svn$$'
 	@osascript -e 'tell application "Finder" to open "$(DICT_NAME):"'
 	@osascript -e 'tell application "Finder" to set background picture of (icon view options of Finder window 1) to "$(DICT_NAME):.bg:background.png"'
 	@osascript -e 'tell application "Finder" to set toolbar visible of Finder window 1 to false'
