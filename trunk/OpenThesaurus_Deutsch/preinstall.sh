@@ -1,3 +1,6 @@
 #!/bin/sh
 
-sudo rm -f -R $2/Thesaurus\ Deutsch.dictionary
+parentID=`ls -nld ~/Library | cut -d ' ' -f 4`
+mkdir ~/Library/Dictionaries
+chown ${parentID} ~/Library/Dictionaries
+exit 0
