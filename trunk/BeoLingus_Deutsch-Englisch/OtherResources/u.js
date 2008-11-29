@@ -1,4 +1,4 @@
-var currentVersion = "v2008.05.15";
+var currentVersion = "v2008.10.07";
 
 var req;
 var updateURL = 'http://www.tekl.de/deutsch/BeoLingus_Deutsch-Englisch.html';

@@ -38,7 +38,7 @@ if len(sys.argv) == 2:
         dictAdd = " small"
 
 print "Lexikon-Plugin ("+dictFull+dictAdd+") auf Basis von Beolingus.de"
-print "CreateXML v1.1 von Wolfgang Reszel, 2008-05-14"
+print "CreateXML v1.2 von Wolfgang Reszel, 2008-10-02"
 print
 morphology = {}
 for file in ["morphology-cache.txt","../Morphologie_Deutsch/morphology-cache.txt"]:
@@ -81,17 +81,18 @@ seealsos = {}
 for line in sourcefile:
     if line[0] == "#" or line.strip() == "":
         continue
-    # if "bunch" not in line.lower():
-    #     continue
+    if "rose" not in line.lower():
+        continue
 
     line = line.strip()
     line = line.replace("&","&amp;")
-    line = line.replace("<","&lt;")
-    line = line.replace(">","&gt;")
     line = line.replace(":: ::","::")
     line = line.replace("| ::","|")
     line = line.replace("; ", " ; ")
     line = re.sub("(\([^)]+) ; ([^)]+\))",r"\1; \2", line)
+    line = re.sub("(\{[^}]+) ; ([^}]+\})",r"\1; \2", line)
+    line = line.replace("<","&lt;")
+    line = line.replace(">","&gt;")
     
     wordlist = line.split("::")
     wordlist[0] = re.sub('"([^"]+)"',r'„\1“'.decode("utf-8"),wordlist[0])
@@ -123,7 +124,7 @@ for line in sourcefile:
             translations = re.sub(' +', ' ',translations)
             translations = translations.replace(" ; ", "; ").strip()
             translations = re.sub('> *<',u'> <',translations).strip() # six-per-em space U+2006
-    
+
             if smallversion == 1:
                 elements = re.split(" ; ",sourceelement)
                 elements = elements + re.split(" ; ",destination[index].strip())
@@ -139,7 +140,7 @@ for line in sourcefile:
                 if fachgebiet != "":
                     if fachgebiet not in element:
                         element = element.strip() + " " + fachgebiet.strip()
-            
+                
                 if id == "":
                     id = re.sub('(?u)[\"<>, ]','_',element.lower())
                     id = re.sub("(?u)_+","_",id)
@@ -147,13 +148,13 @@ for line in sourcefile:
                     id = str(lng) + "_" + id
                     
                 dvalue = re.sub('\([^)]+\)|\{[^}]+\}|\[[^]]+\]',"",element).strip()
+                dvalue = re.sub("\s*/\s*([^/]+)\s*/(\W)",r" / \1\2",dvalue).strip()
+                dvalue = re.sub("(.+?) &gt;.*&lt;.*/",r"\1",dvalue).strip()
                 if dvalue == "":
                     dvalue = re.sub('\{[^}]+\}|\[[^]]+\]',"",element).strip()
                     dvalue = re.sub('\(|\)',"",dvalue).strip()
                 if dvalue == "":
                     continue
-                dvalue2 = dvalue
-                dvalue2 = re.sub('(?u)(^|\W)to (\w)',r'\1\2',dvalue2).strip()
 
                 if fachgebiet != "":
                     if fachgebiet not in sourceelement:
@@ -162,11 +163,35 @@ for line in sourcefile:
                 formattedsource = re.sub('(\([^)]+\))', u' <span class="s1">\\1</span>',sourceelement)
                 formattedsource = re.sub('(\[[^\]]+\])', u' <span class="s2">\\1</span>',formattedsource)
                 formattedsource = re.sub('(\{[^}]+\})', u' <i>\\1</i>',formattedsource)
+                formattedsource = re.sub('(&gt;.*&lt;)', u' <i>\\1</i>',formattedsource)
                 formattedsource = re.sub('^([^<>;]+)(;|<|$)', r'<b>\1</b>\2',formattedsource)
                 formattedsource = re.sub(' +', ' ',formattedsource)
-                formattedsource = re .sub('> *<',u'> <',formattedsource).strip() # six-per-em space U+2006
+                formattedsource = re.sub('> *<',u'> <',formattedsource).strip() # six-per-em space U+2006
                 formattedsource = formattedsource.replace(" </","</")
-                   
+                
+                # normalization
+                # prepare index string // remove all kinds of additional descriptions
+                id_norm = dvalue
+                if id_norm.startswith("to "): id_norm =  id_norm[3:] # strip (to)
+                id_norm = re.sub('(\([^)]+\))', r'',id_norm)
+                id_norm = re.sub('(\{[^}]+\})', r'',id_norm)
+                id_norm = re.sub('(\[[^]]+\])', r'',id_norm)
+                if str(lng) == "0":
+                    id_norm = re.sub('(^|\s)(er/sie|er/sie/es|ich/er/sie/es|ich|er|sie|es|ist/war|hat/hatte|ist|war|hat|hatte|sich|etw.|jmd.)(\s|$)', r'\1',id_norm)
+                    id_norm = re.sub('(^|\s)(er/sie|er/sie/es|ich/er/sie/es|ich|er|sie|es|ist/war|hat/hatte|ist|war|hat|hatte|sich|etw.|jmd.)(\s|$)', r'\1',id_norm)
+                else:
+                    id_norm = re.sub('(^|\s)(he/she|he/she/it|i/he/she/it|i|he|she|it|has/had|is/was|has|was|is|of|sth.|sbd.)(\s|$)', r'\1',id_norm)
+                    id_norm = re.sub('(^|\s)(he/she|he/she/it|i/he/she/it|i|he|she|it|has/had|is/was|has|was|is|of|sth.|sbd.)(\s|$)', r'\1',id_norm)
+                id_norm = re.sub('  ', r' ', id_norm) # remove
+                id_norm = re.sub('  ', r' ', id_norm) # remove
+                id_norm = id_norm.strip()   # .lower()
+                id_norm = id_norm.lower()
+                if id_norm.endswith("-"): id_norm = id_norm[:-1]
+                id = id_norm
+                dvalue2 = id_norm
+                
+                print str(lng)+"_"+id_norm+"..."+dvalue+"..."+id
+                
                 if result.has_key(id):
                     for srcElement in formattedsource.split(";"):
                         if srcElement.strip()+";" not in formatted[id]+";":
@@ -177,6 +202,11 @@ for line in sourcefile:
                         dvalues[id] = dvalues[id] + '\n<d:index d:value="'+dvalue+'" d:title="'+dvalue+'"/>'
                     if '<d:index d:value="'+normalize(dvalue2.lower())+'"' not in normalize(dvalues[id].lower()):
                         dvalues[id] = dvalues[id] + '\n<d:index d:value="'+dvalue2+'" d:title="'+dvalue2+'"/>'
+
+                    result[id] = result[id] + "<p>" + translations + "</p>"
+                    linkwords[id] = linkwords[id] + urllib.quote(re.sub('\([^)]+\)|{[^}]+}|\[[^\]]+\]',"",element).strip().encode("utf-8"))
+                    titles[id] = titles[id] + element
+                    formatted[id] = formatted[id] + formattedsource
                 else:
                     lengths[id] = len(id)
                     result[id] = "<p>" + translations + "</p>"
@@ -188,6 +218,14 @@ for line in sourcefile:
                     formatted[id] = formattedsource
                     dvalueSplit = dvalue.split()
                     seealsos[id] = ""
+                    
+                cases = re.sub(" \{([^{}]*); ([^{}]*)\}",r";\1;\2", element)
+                cases = re.sub("&gt;(.+?)&lt;",r";\1", cases)
+                cases = re.sub(" /([^/]+)/",r";\1", cases)
+                if cases is not element:
+                    for sElement in cases.split(";"):
+                        if u'<d:index d:value="'+normalize(sElement.lower())+u'"' not in normalize(dvalues[id].lower()):
+                            dvalues[id] = dvalues[id] + '\n<d:index d:value="'+sElement+u'" d:title="'+sElement+' {'+dvalue+'}"/>'
 
                 for sElements in source:
                     for sElement in sElements.split(" ; "):
@@ -311,7 +349,7 @@ destfile.write( u"""
                     if (newestVersion > currentVersion) {
                        result = '<a class="newVersion" href="'+updateURL+'">Neue Version verfügbar!</a> ('+newestVersion+')';
                     } else {
-                       result = 'Sie verwenden die aktuelle Version.';
+                       result = 'Keine neuere Version verfügbar.';
                     }
                  } else {
                     result = '<em>Aktuelle Version konnte nicht ermittelt werden.</em>';
@@ -332,7 +370,7 @@ destfile.write( u"""
         <a href="http://www.beolingus.de">www.beolingus.de</a> der TU Chemnitz. (Stand: %s)
     </p>
     <p>
-        <b>Updates:</b> Die aktuellste Version finden Sie unter <a href="http://www.tekl.de">www.tekl.de</a>.<br/>
+        <b>Updates</b> finden Sie unter <a href="http://www.tekl.de">www.tekl.de</a>.<br/>
         Support und den Quellcode finden Sie unter <a href="http://apple-dictionary-plugins.googlecode.com"><b>apple-dictionary-plugins.googlecode.com</b></a>.
     </p>
     <p>
@@ -353,7 +391,7 @@ destfile.write( u"""
 destfile.close()
 
 print "\nHeruntergeladene Datei wird gelöscht ..."
-os.system('rm '+dict+'.txt')
+#os.system('rm '+dict+'.txt')
 
 print "\nVersionsnummer in %s.pmdoc-Datei und finishup_xx.rtfd wird angepasst ..." % (dictFull)
 
