@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundlePackageType</key>
+	<string>BNDL</string>
+	<key>CFBundleSignature</key>
+	<string>dics</string>
+	<key>CFBundleIconFile</key>
+	<string>dictplug.icns</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>German</string>
 	<key>CFBundleIdentifier</key>
@@ -9,9 +15,9 @@
 	<key>CFBundleName</key>
 	<string>OpenThesaurus Deutsch</string>
 	<key>CFBundleShortVersionString</key>
-	<string>v2008.11.29</string>
+	<string>v2008.12.01</string>
 	<key>CFBundleVersion</key>
-	<string>2008.11.29</string>
+	<string>2008.12.01</string>
 	<key>DCSDictionaryCopyright</key>
 	<string>Copyright © 2008 Daniel Naber, www.openthesaurus.de / Wolfgang Reszel, www.tekl.de</string>
 	<key>DCSDictionaryFrontMatterReferenceID</key>
