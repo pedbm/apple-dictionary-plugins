@@ -8,7 +8,7 @@
 \fs38 \
 \pard\pardeftab720\sa320\ql\qnatural
 
-\b0\fs24 \cf0 Version: v2008.11.29 - OS X 10.5
+\b0\fs24 \cf0 Version: v2008.12.01 - OS X 10.5
 \fs28 \
 
 \fs26 Dieses Plugin erweitert Apples Lexikon-Programm (Dictionary.app) um einen 
@@ -51,7 +51,7 @@ Das Lexikon-Plugin unterliegt der GPLv3 (siehe n\'e4chste Seite).}]]></resource>
 \b0\fs38 \
 \pard\pardeftab720\sa320\ql\qnatural
 
-\fs24 \cf0 Version: v2008.11.29 - OS X 10.5
+\fs24 \cf0 Version: v2008.12.01 - OS X 10.5
 \fs28 \
 
 \fs26 This plugin extends Apple's Dictionary Application with a 
@@ -87,4 +87,4 @@ The Python script to convert the OpenThesaurus dictionary into an  dictionary pl
 The source dictionary from OpenThesaurus is licensed under {\field{\*\fldinst{HYPERLINK "http://creativecommons.org/licenses/LGPL/2.1/"}}{\fldrslt 
 \fs20 CC-GNU LGPL}}
 \fs20 .\
-The dictionary plugin is licensed under the GPLv3 (see next page).}]]></resource><resource relative="true" mod="true" type="conclusion">finishup_en.rtfd</resource></locale></resources><requirements><requirement id="sosv" operator="ge" value="'10.5'"><message-title>Installation nicht möglich</message-title><message>Sie benötigen OS X 10.5 (Leopard) oder höher.\n\nInstallation not possible!\nYou need OS X 10.5 (Leopard) or later.</message></requirement><requirement id="tosv" operator="ge" value="'10.5'"><message>Bitte wählen Sie ein Volume, wo OS X 10.5 (Leopard) installiert ist.\n\nPlease select a Volume where OS X 10.5 (Leopard) is installed.</message></requirement></requirements><flags/><preinstall><action id="com.apple.packagemaker.actions.getapplication"><item1-title>com.apple.Dictionary</item1-title><item2-title>Dictionary</item2-title></action><action id="com.apple.packagemaker.actions.quitapplication"/><action id="com.apple.packagemaker.actions.getapplication"><item1-title>com.apple.DictionaryPanel</item1-title><item2-title>DictionaryPanel</item2-title></action><action id="com.apple.packagemaker.actions.quitapplication"/></preinstall><postinstall><action id="com.apple.packagemaker.actions.openfile"><value>/Applications/Dictionary.app</value><type>absolute-path</type></action></postinstall><item type="file">01openthesaurus.xml</item><mod>properties.userDomain</mod><mod>properties.anywhereDomain</mod><mod>properties.systemDomain</mod><mod>properties.customizeOption</mod><mod>preinstallActions.actions</mod><mod>properties.title</mod><mod>description</mod><mod>postinstallActions.actions</mod></pkmkdoc>
+The dictionary plugin is licensed under the GPLv3 (see next page).}]]></resource><resource relative="true" mod="true" type="conclusion">finishup_en.rtfd</resource></locale></resources><requirements><requirement id="sosv" operator="ge" value="'10.5'"><message-title>Installation nicht möglich</message-title><message>Sie benötigen OS X 10.5 (Leopard) oder höher.\n\nInstallation not possible!\nYou need OS X 10.5 (Leopard) or later.</message></requirement><requirement id="tosv" operator="ge" value="'10.5'"><message>Bitte wählen Sie ein Volume, wo OS X 10.5 (Leopard) installiert ist.\n\nPlease select a Volume where OS X 10.5 (Leopard) is installed.</message></requirement></requirements><flags/><preinstall><action id="com.apple.packagemaker.actions.getapplication"><item1-title>com.apple.Dictionary</item1-title><item2-title>Dictionary</item2-title></action><action id="com.apple.packagemaker.actions.quitapplication"/><action id="com.apple.packagemaker.actions.getapplication"><item1-title>com.apple.DictionaryPanel</item1-title><item2-title>DictionaryPanel</item2-title></action><action id="com.apple.packagemaker.actions.quitapplication"/></preinstall><postinstall><action id="com.apple.packagemaker.actions.openfile"><value>/Applications/Dictionary.app</value><type>absolute-path</type></action></postinstall><item type="file">01openthesaurus.xml</item><mod>properties.userDomain</mod><mod>preinstallActions.actions</mod><mod>properties.systemDomain</mod><mod>properties.customizeOption</mod><mod>properties.anywhereDomain</mod><mod>properties.title</mod><mod>description</mod><mod>postinstallActions.actions</mod></pkmkdoc>

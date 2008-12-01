@@ -8,14 +8,14 @@
 
 # You need to edit these values.
 
-DICT_NAME		=	OpenThesaurus Deutsch
-DICT_SRC_PATH	=	ThesaurusDeutsch.xml
-CSS_PATH		=	ThesaurusDeutsch.css
-PMDOC_NAME      =   ThesaurusDeutsch.pmdoc
-PLIST_PATH		=	Info.plist
-DATE            =   `date +"v%Y.%m.%d"`
+DICT_NAME       = OpenThesaurus Deutsch
+DICT_SRC_PATH   = ThesaurusDeutsch.xml
+CSS_PATH        = ThesaurusDeutsch.css
+PMDOC_NAME      = ThesaurusDeutsch.pmdoc
+PLIST_PATH      = Info.plist
+DATE            = `date +"v%Y.%m.%d"`
 
-DICT_BUILD_OPTS		=
+DICT_BUILD_OPTS = -c 1 -e 0
 # Suppress adding supplementary key.
 # DICT_BUILD_OPTS		=	-s 0	# Suppress adding supplementary key.
 
@@ -35,16 +35,32 @@ export	DICT_DEV_KIT_OBJ_DIR
 DESTINATION_FOLDER	=	/Library/Dictionaries
 RM			=	/bin/rm
 
+CR = `echo "\r"`
+
 ###########################
 
 all:
 	@/usr/bin/python createxml.py
 	@"$(DICT_BUILD_TOOL_BIN)/build_dict.sh" $(DICT_BUILD_OPTS) "$(DICT_NAME)" $(DICT_SRC_PATH) $(CSS_PATH) $(PLIST_PATH)
+	@cp PkgInfo "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
+	@cp dictplug.icns "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/Contents/Resources"
+	@cp dictplug.icns "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/Icon$(CR)"
+	@setfile -a B "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
+	@setfile -a C "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
+	@setfile -t BNDL "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
+	@setfile -c dics "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
 	@echo "Done."
 	@echo "Use 'sudo make install' to install the dictionary or 'make package' to create the Install Package."
 
 make:
 	@"$(DICT_BUILD_TOOL_BIN)/build_dict.sh" $(DICT_BUILD_OPTS) "$(DICT_NAME)" $(DICT_SRC_PATH) $(CSS_PATH) $(PLIST_PATH)
+	@cp PkgInfo "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
+	@cp dictplug.icns "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/Contents/Resources"
+	@cp dictplug.icns "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/Icon$(CR)"
+	@setfile -a B "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
+	@setfile -a C "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
+	@setfile -t BNDL "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
+	@setfile -c dics "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
 	@echo "Done."
 
 package:
