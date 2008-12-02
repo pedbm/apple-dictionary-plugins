@@ -2,10 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleIconFile</key>
+	<string>dictplug</string>
+	<key>LSRequiresCarbon</key>
+	<true/>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleExecutable</key>
+	<string>applet</string>
 	<key>CFBundlePackageType</key>
-	<string>BNDL</string>
+	<string>APPL</string>
 	<key>CFBundleSignature</key>
-	<string>dics</string>
+	<string>aplt</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>German</string>
 	<key>CFBundleIdentifier</key>

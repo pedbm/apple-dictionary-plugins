@@ -43,14 +43,15 @@ all:
 	@/usr/bin/python createxml.py
 	@"$(DICT_BUILD_TOOL_BIN)/build_dict.sh" $(DICT_BUILD_OPTS) "$(DICT_NAME)" $(DICT_SRC_PATH) $(CSS_PATH) $(PLIST_PATH)
 	@cp PkgInfo "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/Contents"
-	@cp dictplug.icns "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/Icon$(CR)"
-	@cp ._dictplug.icns "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/._Icon$(CR)"
-	@setfile -a B "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
-	@setfile -a C "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
-	@setfile -t BNDL "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
-	@setfile -c dics "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
-	@splitforks "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
-	@mv "$(DICT_DEV_KIT_OBJ_DIR)/._$(DICT_NAME).dictionary" "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/_$(DICT_NAME).dictionary"
+	@cp dictplug.icns "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/Contents/Resources"
+# @cp dictplug.icns "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/Icon$(CR)"
+#	@cp ._dictplug.icns "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/._Icon$(CR)"
+#	@setfile -a B "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
+#	@setfile -a C "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
+#	@setfile -t APPL "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
+#	@setfile -c aplt "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
+#	@splitforks "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
+#	@mv "$(DICT_DEV_KIT_OBJ_DIR)/._$(DICT_NAME).dictionary" "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/_$(DICT_NAME).dictionary"
 	@echo "Done."
 	@echo "Use 'sudo make install' to install the dictionary or 'make package' to create the Install Package."
 
@@ -61,8 +62,8 @@ make:
 	@cp ._dictplug.icns "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/._Icon$(CR)"
 	@setfile -a B "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
 	@setfile -a C "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
-	@setfile -t BNDL "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
-	@setfile -c dics "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
+	@setfile -t APPL "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
+	@setfile -c aplt "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
 	@splitforks "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
 	@mv "$(DICT_DEV_KIT_OBJ_DIR)/._$(DICT_NAME).dictionary" "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/_$(DICT_NAME).dictionary"
 	@echo "Done."
@@ -81,9 +82,9 @@ package:
 	@osascript -e 'tell application "Finder" to set toolbar visible of Finder window 1 to false'
 	@osascript -e 'tell application "Finder" to set bounds of Finder window 1 to {100, 100, 660, 470}'
 	@osascript -e 'tell application "Finder" to set arrangement of icon view options of Finder window 1 to not arranged'
-	@osascript -e 'tell application "Finder" to set position of item 1 of Finder window 1 to {131, 159}'
 	@osascript -e 'tell application "Finder" to set current view of Finder window 1 to icon view'
 	@osascript -e 'tell application "Finder" to set icon size of icon view options of Finder window 1 to 128'
+	@osascript -e 'tell application "Finder" to set position of item 1 of Finder window 1 to {131, 159}'
 	@osascript -e 'tell application "Finder" to close Finder window 1'
 	@osascript -e 'tell application "Finder" to delay 3'
 	@osascript -e 'tell application "Finder" to open "$(DICT_NAME):"'
@@ -100,17 +101,31 @@ delivery:
 	@echo "- Creating delivery package."
 	@hdiutil create -type SPARSE -ov -fs HFS+ -attach -noscrub -layout NONE "DMG.sparseimage" -volname "$(DICT_NAME) $(DATE)"
 	@mkdir -p "/Volumes/$(DICT_NAME) $(DATE)/.bg"
-	@cp -R "./objects/OpenThesaurus Deutsch.dictionary" "/Volumes/$(DICT_NAME) $(DATE)"
+	@find "./objects/$(DICT_NAME).dictionary" -name .svn -exec rm -rf {} \;
+	@cp -R "./objects/$(DICT_NAME).dictionary" "/Volumes/$(DICT_NAME) $(DATE)"
 	@cp Readme.rtf "/Volumes/$(DICT_NAME) $(DATE)"
 	@cp Liesmich.rtf "/Volumes/$(DICT_NAME) $(DATE)"
 	@cp dmg.VolumeIcon.icns "/Volumes/$(DICT_NAME) $(DATE)/.VolumeIcon.icns"
 	@SetFile -a C "/Volumes/$(DICT_NAME) $(DATE)/"
 	@osascript -e 'tell application "Finder" to make new alias file at ("$(DICT_NAME) " & do shell script "date +v%Y.%m.%d") to POSIX file "/Library/Dictionaries"'
-	@cp dmg.background.png "/Volumes/$(DICT_NAME) $(DATE)/.bg/background.png"
+	@cp dmg.background2.png "/Volumes/$(DICT_NAME) $(DATE)/.bg/background.png"
 	@cp dmg.DS_Store "/Volumes/$(DICT_NAME) $(DATE)/.DS_Store"
 	@osascript -e 'tell application "Finder" to open "$(DICT_NAME) " & do shell script "date +v%Y.%m.%d" & ":"'
 	@osascript -e 'tell application "Finder" to set background picture of (icon view options of window 1) to "$(DICT_NAME) " & do shell script "date +v%Y.%m.%d" & ":.bg:background.png"'
-	@osascript -e 'tell application "Finder" to close window 1'
+	@osascript -e 'tell application "Finder" to set toolbar visible of Finder window 1 to false'
+	@osascript -e 'tell application "Finder" to set bounds of Finder window 1 to {100, 100, 660, 470}'
+	@osascript -e 'tell application "Finder" to set arrangement of icon view options of Finder window 1 to not arranged'
+	@osascript -e 'tell application "Finder" to set current view of Finder window 1 to icon view'
+	@osascript -e 'tell application "Finder" to set icon size of icon view options of Finder window 1 to 64'
+	@osascript -e 'tell application "Finder" to set position of item 3 of Finder window 1 to {188, 104}'
+	@osascript -e 'tell application "Finder" to set position of item 1 of Finder window 1 to {368, 104}'
+	@osascript -e 'tell application "Finder" to set position of item 2 of Finder window 1 to {218, 253}'
+	@osascript -e 'tell application "Finder" to set position of item 4 of Finder window 1 to {478, 253}'
+	@osascript -e 'tell application "Finder" to close Finder window 1'
+	@osascript -e 'tell application "Finder" to delay 3'
+	@osascript -e 'tell application "Finder" to open "$(DICT_NAME) " & do shell script "date +v%Y.%m.%d" & ":"'
+	@osascript -e 'tell application "Finder" to close Finder window 1'
+	@osascript -e 'tell application "Finder" to delay 3'
 	@echo "- Finishing disk image."
 	@hdiutil eject "/Volumes/$(DICT_NAME) $(DATE)"
 	@hdiutil convert -ov -format UDBZ DMG.sparseimage -o "$(DICT_NAME) $(DATE).dmg"

@@ -252,11 +252,12 @@ print "\nHeruntergeladene Datei wird gelöscht ..."
 os.system("rm thesaurus.txt")
 
 print "\nVersionsnummer in ThesaurusDeutsch.pmdoc und finishup_xx.rtfd wird angepasst ..."
-rtfFiles = ['ThesaurusDeutsch.pmdoc/index.xml','finishup_de.rtfd/TXT.rtf','finishup_en.rtfd/TXT.rtf','gplv3_de.rtf','gplv3_en.rtf']
+rtfFiles = ['ThesaurusDeutsch.pmdoc/index.xml','finishup_de.rtfd/TXT.rtf','finishup_en.rtfd/TXT.rtf','gplv3_de.rtf','gplv3_en.rtf','OtherResources/Resources/English.lproj/Localizable.strings','OtherResources/Resources/German.lproj/Localizable.strings']
 for filename in rtfFiles:
     pmdocFile = codecs.open(filename,'r','UTF-8')
     pmdoc = pmdocFile.read()
     pmdoc = re.sub("Version: .\d+.\d+.\d+", "Version: "+ marketingVersion, pmdoc)
+    pmdoc = re.sub(" v\d+.\d+.\d+\"", " "+ marketingVersion+"\"", pmdoc)
     pmdocFile.close()
     pmdocFile = codecs.open(filename,'w','UTF-8')
     pmdocFile.write( pmdoc )
