@@ -42,25 +42,29 @@ CR = `echo "\r"`
 all:
 	@/usr/bin/python createxml.py
 	@"$(DICT_BUILD_TOOL_BIN)/build_dict.sh" $(DICT_BUILD_OPTS) "$(DICT_NAME)" $(DICT_SRC_PATH) $(CSS_PATH) $(PLIST_PATH)
-	@cp PkgInfo "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
-	@cp dictplug.icns "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/Contents/Resources"
+	@cp PkgInfo "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/Contents"
 	@cp dictplug.icns "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/Icon$(CR)"
+	@cp ._dictplug.icns "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/._Icon$(CR)"
 	@setfile -a B "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
 	@setfile -a C "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
 	@setfile -t BNDL "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
 	@setfile -c dics "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
+	@splitforks "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
+	@mv "$(DICT_DEV_KIT_OBJ_DIR)/._$(DICT_NAME).dictionary" "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/_$(DICT_NAME).dictionary"
 	@echo "Done."
 	@echo "Use 'sudo make install' to install the dictionary or 'make package' to create the Install Package."
 
 make:
 	@"$(DICT_BUILD_TOOL_BIN)/build_dict.sh" $(DICT_BUILD_OPTS) "$(DICT_NAME)" $(DICT_SRC_PATH) $(CSS_PATH) $(PLIST_PATH)
-	@cp PkgInfo "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
-	@cp dictplug.icns "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/Contents/Resources"
+	@cp PkgInfo "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/Contents"
 	@cp dictplug.icns "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/Icon$(CR)"
+	@cp ._dictplug.icns "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/._Icon$(CR)"
 	@setfile -a B "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
 	@setfile -a C "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
 	@setfile -t BNDL "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
 	@setfile -c dics "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
+	@splitforks "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
+	@mv "$(DICT_DEV_KIT_OBJ_DIR)/._$(DICT_NAME).dictionary" "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/_$(DICT_NAME).dictionary"
 	@echo "Done."
 
 package:
