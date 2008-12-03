@@ -44,28 +44,13 @@ all:
 	@"$(DICT_BUILD_TOOL_BIN)/build_dict.sh" $(DICT_BUILD_OPTS) "$(DICT_NAME)" $(DICT_SRC_PATH) $(CSS_PATH) $(PLIST_PATH)
 	@cp PkgInfo "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/Contents"
 	@cp dictplug.icns "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/Contents/Resources"
-# @cp dictplug.icns "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/Icon$(CR)"
-#	@cp ._dictplug.icns "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/._Icon$(CR)"
-#	@setfile -a B "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
-#	@setfile -a C "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
-#	@setfile -t APPL "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
-#	@setfile -c aplt "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
-#	@splitforks "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
-#	@mv "$(DICT_DEV_KIT_OBJ_DIR)/._$(DICT_NAME).dictionary" "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/_$(DICT_NAME).dictionary"
 	@echo "Done."
 	@echo "Use 'sudo make install' to install the dictionary or 'make package' to create the Install Package."
 
 make:
 	@"$(DICT_BUILD_TOOL_BIN)/build_dict.sh" $(DICT_BUILD_OPTS) "$(DICT_NAME)" $(DICT_SRC_PATH) $(CSS_PATH) $(PLIST_PATH)
 	@cp PkgInfo "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/Contents"
-	@cp dictplug.icns "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/Icon$(CR)"
-	@cp ._dictplug.icns "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/._Icon$(CR)"
-	@setfile -a B "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
-	@setfile -a C "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
-	@setfile -t APPL "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
-	@setfile -c aplt "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
-	@splitforks "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
-	@mv "$(DICT_DEV_KIT_OBJ_DIR)/._$(DICT_NAME).dictionary" "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/_$(DICT_NAME).dictionary"
+	@cp dictplug.icns "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/Contents/Resources"
 	@echo "Done."
 
 package:
@@ -103,6 +88,8 @@ delivery:
 	@mkdir -p "/Volumes/$(DICT_NAME) $(DATE)/.bg"
 	@find "./objects/$(DICT_NAME).dictionary" -name .svn -exec rm -rf {} \;
 	@cp -R "./objects/$(DICT_NAME).dictionary" "/Volumes/$(DICT_NAME) $(DATE)"
+	@sudo chown -R 0:80 "/Volumes/$(DICT_NAME) $(DATE)/$(DICT_NAME).dictionary"
+	@sudo chmod -R ug+rwx "/Volumes/$(DICT_NAME) $(DATE)/$(DICT_NAME).dictionary"
 	@cp Readme.rtf "/Volumes/$(DICT_NAME) $(DATE)"
 	@cp Liesmich.rtf "/Volumes/$(DICT_NAME) $(DATE)"
 	@cp dmg.VolumeIcon.icns "/Volumes/$(DICT_NAME) $(DATE)/.VolumeIcon.icns"
@@ -129,6 +116,26 @@ delivery:
 	@echo "- Finishing disk image."
 	@hdiutil eject "/Volumes/$(DICT_NAME) $(DATE)"
 	@hdiutil convert -ov -format UDBZ DMG.sparseimage -o "$(DICT_NAME) $(DATE).dmg"
+	@rm DMG.sparseimage
+	@echo "Done."
+	
+internetenabled:
+	@echo "- Creating delivery package."
+	@hdiutil create -type SPARSE -ov -fs HFS+ -attach -noscrub -layout NONE "DMG.sparseimage" -volname "$(DICT_NAME) $(DATE)"
+	@mkdir -p "/Volumes/$(DICT_NAME) $(DATE)/.bg"
+	@find "./objects/$(DICT_NAME).dictionary" -name .svn -exec rm -rf {} \;
+	@cp -R "./objects/$(DICT_NAME).dictionary" "/Volumes/$(DICT_NAME) $(DATE)"
+	@sudo chown -R 0:80 "/Volumes/$(DICT_NAME) $(DATE)/$(DICT_NAME).dictionary"
+	@sudo chmod -R ug+rwx "/Volumes/$(DICT_NAME) $(DATE)/$(DICT_NAME).dictionary"
+	@cp dmg.VolumeIcon.icns "/Volumes/$(DICT_NAME) $(DATE)/.VolumeIcon.icns"
+	@SetFile -a C "/Volumes/$(DICT_NAME) $(DATE)/"
+	@echo "- Finishing disk image."
+	@hdiutil eject "/Volumes/$(DICT_NAME) $(DATE)"
+	@hdiutil convert -ov -format UDBZ DMG.sparseimage -o "$(DICT_NAME) $(DATE).dmg"
+	@hdiutil internet-enable "$(DICT_NAME) $(DATE).dmg"
+#	@hdiutil unflatten "$(DICT_NAME) $(DATE).dmg" 
+#	@/Developer/Tools/Rez /Developer/Headers/FlatCarbon/*.r "SLA.r" -a -o "$(DICT_NAME) $(DATE).dmg" 
+#	@hdiutil flatten "$(DICT_NAME) $(DATE).dmg"
 	@rm DMG.sparseimage
 	@echo "Done."
 
