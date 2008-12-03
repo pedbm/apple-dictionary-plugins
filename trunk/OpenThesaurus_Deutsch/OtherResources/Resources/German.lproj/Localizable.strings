@@ -1,4 +1,5 @@
-"PluginName" = "OpenThesaurus Deutsch v2008.12.02";
+"PluginName" = "OpenThesaurus Deutsch v2008.12.03";
+"Readme.rtf" = "Liesmich.rtf";
 "This is a dictionary plugin for Apple Dictionary.app.\r\rWhere do you want to install it?" = "Dies ist ein Plugin für Apples Lexikon.app.\r\rWo soll es installiert werden?";
 "Cancel" = "Abbrechen";
 "Install for all users" = "Für alle Benutzer";
@@ -14,3 +15,5 @@
 "This dictionary plugin requires OS X 10.5 (Leopard) or later!" = "Dieses Lexikon-Plugin erforder OS X 10.5 (Leopard) oder höher!";
 "This is a dictionary plugin for Apple Dictionary.app.\r\rYou have already installed this plugin.\rDo you want to uninstall or to update it?" = "Dies ist ein Plugin für Apples Lexikon.app.\r\rDas Plugin ist bereits installiert.\rMöchten Sie es deinstallieren oder aktualisieren?";
 "Update this plugin" = "Plugin aktualisieren";
+"Install cancelled." = "Installation wurde abgebrochen.";
+"Uninstall cancelled." = "Deinstallation wurde abgebrochen.";

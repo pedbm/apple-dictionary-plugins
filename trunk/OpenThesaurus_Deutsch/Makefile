@@ -44,6 +44,7 @@ all:
 	@"$(DICT_BUILD_TOOL_BIN)/build_dict.sh" $(DICT_BUILD_OPTS) "$(DICT_NAME)" $(DICT_SRC_PATH) $(CSS_PATH) $(PLIST_PATH)
 	@cp PkgInfo "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/Contents"
 	@cp dictplug.icns "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/Contents/Resources"
+#	@SetFile -a e "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
 	@echo "Done."
 	@echo "Use 'sudo make install' to install the dictionary or 'make package' to create the Install Package."
 
@@ -86,8 +87,8 @@ delivery:
 	@echo "- Creating delivery package."
 	@hdiutil create -type SPARSE -ov -fs HFS+ -attach -noscrub -layout NONE "DMG.sparseimage" -volname "$(DICT_NAME) $(DATE)"
 	@mkdir -p "/Volumes/$(DICT_NAME) $(DATE)/.bg"
-	@find "./objects/$(DICT_NAME).dictionary" -name .svn -exec rm -rf {} \;
-	@cp -R "./objects/$(DICT_NAME).dictionary" "/Volumes/$(DICT_NAME) $(DATE)"
+	@find "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary" -name .svn -exec rm -rf {} \;
+	@cp -R "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary" "/Volumes/$(DICT_NAME) $(DATE)"
 	@sudo chown -R 0:80 "/Volumes/$(DICT_NAME) $(DATE)/$(DICT_NAME).dictionary"
 	@sudo chmod -R ug+rwx "/Volumes/$(DICT_NAME) $(DATE)/$(DICT_NAME).dictionary"
 	@cp Readme.rtf "/Volumes/$(DICT_NAME) $(DATE)"
@@ -121,18 +122,33 @@ delivery:
 	
 internetenabled:
 	@echo "- Creating delivery package."
-	@hdiutil create -type SPARSE -ov -fs HFS+ -attach -noscrub -layout NONE "DMG.sparseimage" -volname "$(DICT_NAME) $(DATE)"
+	@hdiutil create -type SPARSE -ov -fs HFS+ -noscrub -layout NONE "DMG.sparseimage" -volname "$(DICT_NAME) $(DATE)"
+	@hdiutil attach -owners on DMG.sparseimage
 	@mkdir -p "/Volumes/$(DICT_NAME) $(DATE)/.bg"
-	@find "./objects/$(DICT_NAME).dictionary" -name .svn -exec rm -rf {} \;
-	@cp -R "./objects/$(DICT_NAME).dictionary" "/Volumes/$(DICT_NAME) $(DATE)"
-	@sudo chown -R 0:80 "/Volumes/$(DICT_NAME) $(DATE)/$(DICT_NAME).dictionary"
-	@sudo chmod -R ug+rwx "/Volumes/$(DICT_NAME) $(DATE)/$(DICT_NAME).dictionary"
+	@find "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary" -name "*.svn*" -exec rm -rf {} \; ; exit 0
+	@cp -R -p "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary" "/Volumes/$(DICT_NAME) $(DATE)"
+	@sudo chown -R root:admin "/Volumes/$(DICT_NAME) $(DATE)"
+	@sudo chmod -R ug+rwx "/Volumes/$(DICT_NAME) $(DATE)"
 	@cp dmg.VolumeIcon.icns "/Volumes/$(DICT_NAME) $(DATE)/.VolumeIcon.icns"
 	@SetFile -a C "/Volumes/$(DICT_NAME) $(DATE)/"
+	@cp dmg.background3.png "/Volumes/$(DICT_NAME) $(DATE)/.bg/background.png"
+	@osascript -e 'tell application "Finder" to open "$(DICT_NAME) " & do shell script "date +v%Y.%m.%d" & ":"'
+	@osascript -e 'tell application "Finder" to set background picture of (icon view options of window 1) to "$(DICT_NAME) " & do shell script "date +v%Y.%m.%d" & ":.bg:background.png"'
+	@osascript -e 'tell application "Finder" to set toolbar visible of Finder window 1 to false'
+	@osascript -e 'tell application "Finder" to set bounds of Finder window 1 to {100, 100, 660, 470}'
+	@osascript -e 'tell application "Finder" to set arrangement of icon view options of Finder window 1 to not arranged'
+	@osascript -e 'tell application "Finder" to set current view of Finder window 1 to icon view'
+	@osascript -e 'tell application "Finder" to set icon size of icon view options of Finder window 1 to 128'
+	@osascript -e 'tell application "Finder" to set position of item 1 of Finder window 1 to {148, 99}'
+	@osascript -e 'tell application "Finder" to close Finder window 1'
+	@osascript -e 'tell application "Finder" to delay 3'
+	@osascript -e 'tell application "Finder" to open "$(DICT_NAME) " & do shell script "date +v%Y.%m.%d" & ":"'
+	@osascript -e 'tell application "Finder" to close Finder window 1'
+	@osascript -e 'tell application "Finder" to delay 3'
 	@echo "- Finishing disk image."
 	@hdiutil eject "/Volumes/$(DICT_NAME) $(DATE)"
 	@hdiutil convert -ov -format UDBZ DMG.sparseimage -o "$(DICT_NAME) $(DATE).dmg"
-	@hdiutil internet-enable "$(DICT_NAME) $(DATE).dmg"
+#	@hdiutil internet-enable "$(DICT_NAME) $(DATE).dmg"
 #	@hdiutil unflatten "$(DICT_NAME) $(DATE).dmg" 
 #	@/Developer/Tools/Rez /Developer/Headers/FlatCarbon/*.r "SLA.r" -a -o "$(DICT_NAME) $(DATE).dmg" 
 #	@hdiutil flatten "$(DICT_NAME) $(DATE).dmg"
