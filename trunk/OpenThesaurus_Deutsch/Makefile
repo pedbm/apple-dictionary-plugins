@@ -135,7 +135,7 @@ internetenabled:
 	@osascript -e 'tell application "Finder" to open "$(DICT_NAME) " & do shell script "date +v%Y.%m.%d" & ":"'
 	@osascript -e 'tell application "Finder" to set background picture of (icon view options of window 1) to "$(DICT_NAME) " & do shell script "date +v%Y.%m.%d" & ":.bg:background.png"'
 	@osascript -e 'tell application "Finder" to set toolbar visible of Finder window 1 to false'
-	@osascript -e 'tell application "Finder" to set bounds of Finder window 1 to {100, 100, 660, 470}'
+	@osascript -e 'tell application "Finder" to set bounds of Finder window 1 to {100, 100, 660, 480}'
 	@osascript -e 'tell application "Finder" to set arrangement of icon view options of Finder window 1 to not arranged'
 	@osascript -e 'tell application "Finder" to set current view of Finder window 1 to icon view'
 	@osascript -e 'tell application "Finder" to set icon size of icon view options of Finder window 1 to 128'
@@ -148,7 +148,7 @@ internetenabled:
 	@echo "- Finishing disk image."
 	@hdiutil eject "/Volumes/$(DICT_NAME) $(DATE)"
 	@hdiutil convert -ov -format UDBZ DMG.sparseimage -o "$(DICT_NAME) $(DATE).dmg"
-#	@hdiutil internet-enable "$(DICT_NAME) $(DATE).dmg"
+	@hdiutil internet-enable "$(DICT_NAME) $(DATE).dmg"
 #	@hdiutil unflatten "$(DICT_NAME) $(DATE).dmg" 
 #	@/Developer/Tools/Rez /Developer/Headers/FlatCarbon/*.r "SLA.r" -a -o "$(DICT_NAME) $(DATE).dmg" 
 #	@hdiutil flatten "$(DICT_NAME) $(DATE).dmg"
