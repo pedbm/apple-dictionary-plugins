@@ -13,13 +13,13 @@
 "The plugin has been successfully uninstalled and moved to the trash!" = "Das Plugin wurde erfolgreich deinstalliert und in den Papierkorb verschoben!";
 "The plugin could not be uninstalled!" = "Das Plugin konnte nicht deinstalliert werden!";
 "This dictionary plugin requires OS X 10.5 (Leopard) or later!" = "Dieses Lexikon-Plugin erforder OS X 10.5 (Leopard) oder höher!";
-"This is a dictionary plugin for Apple Dictionary.app.\r\rYou already have installed version " = "Dies ist ein Plugin für Apples Lexikon.app.\r\rEs ist bereits die alte Version ";
+"This is a dictionary plugin for Apple Dictionary.app.\r\rYou already have installed version " = "Dies ist ein Plugin für Apples Lexikon.app.\r\rEs ist bereits eine alte Version ";
 " of this plugin.\rDo you want to uninstall or to update it?" = " installiert.\rMöchten Sie es deinstallieren oder aktualisieren?";
 "Update this plugin" = "Plugin aktualisieren";
 "Install cancelled." = "Installation wurde abgebrochen.";
 "Uninstall cancelled." = "Deinstallation wurde abgebrochen.";
 "You already have installed version " = "Version ";
 " of this plugin!" = " dieses Plugins ist bereits installiert!";
-"You already have installed a newer version (" = "Es ist bereits eine neuere Version (";
-") of this plugin!" = " dieses Plugins installiert!";
+"You already have a newer version (" = "Es ist bereits eine neuere Version (";
+") of this plugin!" = ") dieses Plugins installiert!";
 "Do you want to uninstall it?" = "Möchten Sie es deinstallieren?";
