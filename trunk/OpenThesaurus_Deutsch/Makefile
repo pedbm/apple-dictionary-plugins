@@ -48,12 +48,6 @@ all:
 	@echo "Done."
 	@echo "Use 'sudo make install' to install the dictionary or 'make package' to create the Install Package."
 
-make:
-	@"$(DICT_BUILD_TOOL_BIN)/build_dict.sh" $(DICT_BUILD_OPTS) "$(DICT_NAME)" $(DICT_SRC_PATH) $(CSS_PATH) $(PLIST_PATH)
-	@cp PkgInfo "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/Contents"
-	@cp dictplug.icns "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/Contents/Resources"
-	@echo "Done."
-
 package:
 	@echo "- Creating install package."
 	@hdiutil create -type SPARSE -ov -fs HFS+ -attach -noscrub -layout NONE "DMG.sparseimage" -volname "$(DICT_NAME)"
@@ -89,10 +83,10 @@ delivery:
 	@mkdir -p "/Volumes/$(DICT_NAME) $(DATE)/.bg"
 	@find "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary" -name .svn -exec rm -rf {} \;
 	@cp -R "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary" "/Volumes/$(DICT_NAME) $(DATE)"
-	@sudo chown -R 0:80 "/Volumes/$(DICT_NAME) $(DATE)/$(DICT_NAME).dictionary"
-	@sudo chmod -R ug+rwx "/Volumes/$(DICT_NAME) $(DATE)/$(DICT_NAME).dictionary"
-	@cp Readme.rtf "/Volumes/$(DICT_NAME) $(DATE)"
-	@cp Liesmich.rtf "/Volumes/$(DICT_NAME) $(DATE)"
+#	@sudo chown -R 0:80 "/Volumes/$(DICT_NAME) $(DATE)/$(DICT_NAME).dictionary"
+#	@sudo chmod -R ug+rwx "/Volumes/$(DICT_NAME) $(DATE)/$(DICT_NAME).dictionary"
+	@cp -R OtherResources/Readme.rtfd "/Volumes/$(DICT_NAME) $(DATE)"
+	@cp -R OtherResources/Liesmich.rtfd "/Volumes/$(DICT_NAME) $(DATE)"
 	@cp dmg.VolumeIcon.icns "/Volumes/$(DICT_NAME) $(DATE)/.VolumeIcon.icns"
 	@SetFile -a C "/Volumes/$(DICT_NAME) $(DATE)/"
 	@osascript -e 'tell application "Finder" to make new alias file at ("$(DICT_NAME) " & do shell script "date +v%Y.%m.%d") to POSIX file "/Library/Dictionaries"'
@@ -138,7 +132,7 @@ internetenabled:
 	@osascript -e 'tell application "Finder" to set arrangement of icon view options of Finder window 1 to not arranged'
 	@osascript -e 'tell application "Finder" to set current view of Finder window 1 to icon view'
 	@osascript -e 'tell application "Finder" to set icon size of icon view options of Finder window 1 to 128'
-	@osascript -e 'tell application "Finder" to set position of item 1 of Finder window 1 to {148, 99}'
+	@osascript -e 'tell application "Finder" to set position of item 1 of Finder window 1 to {144, 82}'
 	@osascript -e 'tell application "Finder" to close Finder window 1'
 	@osascript -e 'tell application "Finder" to delay 3'
 	@osascript -e 'tell application "Finder" to open "$(DICT_NAME) " & do shell script "date +v%Y.%m.%d" & ":"'
