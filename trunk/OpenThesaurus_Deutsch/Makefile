@@ -122,13 +122,12 @@ delivery:
 	
 internetenabled:
 	@echo "- Creating delivery package."
-	@hdiutil create -type SPARSE -ov -fs HFS+ -noscrub -layout NONE "DMG.sparseimage" -volname "$(DICT_NAME) $(DATE)"
-	@hdiutil attach -owners on DMG.sparseimage
+	@hdiutil create -type SPARSE -ov -fs HFS+ -attach -noscrub -layout NONE "DMG.sparseimage" -volname "$(DICT_NAME) $(DATE)"
 	@mkdir -p "/Volumes/$(DICT_NAME) $(DATE)/.bg"
 	@find "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary" -name "*.svn*" -exec rm -rf {} \; ; exit 0
 	@cp -R -p "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary" "/Volumes/$(DICT_NAME) $(DATE)"
-	@sudo chown -R root:admin "/Volumes/$(DICT_NAME) $(DATE)"
-	@sudo chmod -R ug+rwx "/Volumes/$(DICT_NAME) $(DATE)"
+#	@sudo chown -R root:admin "/Volumes/$(DICT_NAME) $(DATE)"
+#	@sudo chmod -R ug+rwx "/Volumes/$(DICT_NAME) $(DATE)"
 	@cp dmg.VolumeIcon.icns "/Volumes/$(DICT_NAME) $(DATE)/.VolumeIcon.icns"
 	@SetFile -a C "/Volumes/$(DICT_NAME) $(DATE)/"
 	@cp dmg.background3.png "/Volumes/$(DICT_NAME) $(DATE)/.bg/background.png"
