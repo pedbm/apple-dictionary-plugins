@@ -28,7 +28,7 @@ def normalize(s):
 os.system("clear")
 
 print "Lexikon-Plugin auf Basis von OpenThesaurus.de"
-print "CreateXML v1.0 von Wolfgang Reszel, 2008-09-26"
+print "CreateXML v1.1 von Wolfgang Reszel, 2008-12-05"
 print
 morphology = {}
 for file in ["morphology-cache.txt","../Morphologie_Deutsch/morphology-cache.txt"]:
@@ -252,7 +252,7 @@ print "\nHeruntergeladene Datei wird gelöscht ..."
 os.system("rm thesaurus.txt")
 
 print "\nVersionsnummer in ThesaurusDeutsch.pmdoc und finishup_xx.rtfd wird angepasst ..."
-rtfFiles = ['ThesaurusDeutsch.pmdoc/index.xml','finishup_de.rtfd/TXT.rtf','finishup_en.rtfd/TXT.rtf','OtherResources/Liesmich.rtf','OtherResources/Readme.rtf','gplv3_de.rtf','gplv3_en.rtf','OtherResources/Resources/English.lproj/Localizable.strings','OtherResources/Resources/German.lproj/Localizable.strings']
+rtfFiles = ['ThesaurusDeutsch.pmdoc/index.xml','finishup_de.rtfd/TXT.rtf','finishup_en.rtfd/TXT.rtf','OtherResources/Liesmich.rtfd/TXT.rtf','OtherResources/Readme.rtfd/TXT.rtf','gplv3_de.rtf','gplv3_en.rtf','OtherResources/Resources/English.lproj/Localizable.strings','OtherResources/Resources/German.lproj/Localizable.strings']
 for filename in rtfFiles:
     pmdocFile = codecs.open(filename,'r','UTF-8')
     pmdoc = pmdocFile.read()
