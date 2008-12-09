@@ -42,7 +42,6 @@ for file in ["morphology-cache.txt","../Morphologie_Deutsch/morphology-cache.txt
 print "Aktueller Thesaurus wird herunterladen ",
 
 bundleVersion = datetime.datetime.today().strftime("%Y.%m.%d")
-marketingVersion = "v" + bundleVersion
 
 urllib.urlcleanup()
 download = urllib.urlretrieve("http://www.openthesaurus.de/download/thesaurus.txt.gz","thesaurus.txt.gz",progress)
@@ -179,7 +178,7 @@ destfile.write( u"""
         <span id="UpdateMessage"><img src="Images/progress_indicator.gif" valign="middle" alt=""/> Aktuelle Version wird ermittelt ...</span>
         <script type="text/javascript" charset="utf-8">
         var req;
-        var currentVersion = "%s";
+        var currentVersion = "v%s";
         var updateURL = 'http://www.tekl.de/deutsch/OpenThesaurus_Deutsch.html';
 
         window.setTimeout("loadXMLDoc(updateURL)", 500);
@@ -245,7 +244,7 @@ destfile.write( u"""
         <a href="http://creativecommons.org/licenses/LGPL/2.1/">CC-GNU LGPL</a><br/>
     </p>
 </d:entry>
-</d:dictionary>""" % (marketingVersion, marketingVersion, downloadfiledate, wordcount ) )
+</d:dictionary>""" % (bundleVersion, bundleVersion, downloadfiledate, wordcount ) )
 destfile.close()
 
 print "\nHeruntergeladene Datei wird gelöscht ..."
@@ -256,8 +255,9 @@ rtfFiles = ['ThesaurusDeutsch.pmdoc/index.xml','finishup_de.rtfd/TXT.rtf','finis
 for filename in rtfFiles:
     pmdocFile = codecs.open(filename,'r','UTF-8')
     pmdoc = pmdocFile.read()
-    pmdoc = re.sub("Version: .\d+.\d+.\d+", "Version: "+ marketingVersion, pmdoc)
-    pmdoc = re.sub(" v\d+.\d+.\d+\"", " "+ marketingVersion+"\"", pmdoc)
+    pmdoc = re.sub("Version: .\d+.\d+.\d+", "Version: "+ bundleVersion, pmdoc)
+    pmdoc = re.sub(" 20\d+.\d+.\d+\"", " "+ bundleVersion+"\"", pmdoc)
+    pmdoc = re.sub(" v20\d+.\d+.\d+\"", " v"+ bundleVersion+"\"", pmdoc)
     pmdocFile.close()
     pmdocFile = codecs.open(filename,'w','UTF-8')
     pmdocFile.write( pmdoc )
@@ -267,7 +267,7 @@ print "\nVersionsnummer in der Info.plist wird angepasst ..."
 plistFile = codecs.open('Info.plist','r','UTF-8')
 plist = plistFile.read()
 plist = re.sub("(?u)(<key>CFBundleVersion</key>\s+<string>)[^<]+(</string>)", "\\g<1>"+bundleVersion+"\\2", plist) 
-plist = re.sub("(?u)(<key>CFBundleShortVersionString</key>\s+<string>)[^<]+(</string>)", "\\g<1>"+marketingVersion+"\\2", plist) 
+plist = re.sub("(?u)(<key>CFBundleShortVersionString</key>\s+<string>)[^<]+(</string>)", "\\g<1>"+bundleVersion+"\\2", plist) 
 plistFile.close()
 plistFile = codecs.open('Info.plist','w','UTF-8')
 plistFile.write( plist )
@@ -276,7 +276,7 @@ plistFile.close()
 print "\nVersionsnummer in u.js wird angepasst ..."
 plistFile = codecs.open('OtherResources/u.js','r','UTF-8')
 plist = plistFile.read()
-plist = re.sub("(?u)(var currentVersion = \")[^\"]+(\")", "\\g<1>"+marketingVersion+"\\2", plist) 
+plist = re.sub("(?u)(var currentVersion = \")[^\"]+(\")", "\\g<1>v"+bundleVersion+"\\2", plist) 
 plistFile.close()
 plistFile = codecs.open('OtherResources/u.js','w','UTF-8')
 plistFile.write( plist )
