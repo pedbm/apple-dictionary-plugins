@@ -114,8 +114,8 @@ delivery:
 	@rm DMG.sparseimage
 	@echo "Done."
 	
-internetenabled:
-	@echo "- Creating delivery package."
+dmg:
+	@echo "- Creating delivery image."
 	@hdiutil create -type SPARSE -ov -fs HFS+ -attach -noscrub -layout NONE "DMG.sparseimage" -volname "$(DICT_NAME) $(DATE)"
 	@mkdir -p "/Volumes/$(DICT_NAME) $(DATE)/.bg"
 	@find "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary" -name "*.svn*" -exec rm -rf {} \; ; exit 0

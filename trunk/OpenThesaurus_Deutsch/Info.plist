@@ -21,11 +21,14 @@
 	<key>CFBundleName</key>
 	<string>OpenThesaurus Deutsch</string>
 	<key>CFBundleShortVersionString</key>
-	<string>v2008.12.05</string>
+	<string>2008.12.09</string>
 	<key>CFBundleVersion</key>
-	<string>2008.12.05</string>
+	<string>2008.12.09</string>
 	<key>DCSDictionaryCopyright</key>
 	<string>Copyright © 2008 Daniel Naber, www.openthesaurus.de / Wolfgang Reszel, www.tekl.de</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Content: © 2008 Daniel Naber, www.openthesaurus.de
+Plugin: © 2008 Wolfgang Reszel, www.tekl.de</string>
 	<key>DCSDictionaryFrontMatterReferenceID</key>
 	<string>front_back_matter</string>
 	<key>DCSDictionaryManufacturerName</key>
