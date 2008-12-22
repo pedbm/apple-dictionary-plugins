@@ -224,7 +224,7 @@ destfile.write( u"""
     </div>
     <p>
         Dieser Thesaurus basiert auf dem Online-Thesaurus<br/>
-        <a href="http://www.openthesaurus.de">www.openthesaurus.de</a> von Daniel Naber. (Stand: %s, %s Wörter)
+        <a href="http://www.openthesaurus.de">www.openthesaurus.de</a> von Daniel Naber. (Stand: %s, %s Einträge)
     </p>
     <p>
         <b>Updates:</b> Die aktuellste Version finden Sie unter <a href="http://www.tekl.de">www.tekl.de</a>.<br/>
