@@ -28,7 +28,7 @@ def normalize(s):
 os.system("clear")
 
 print "Lexikon-Plugin auf Basis von OpenThesaurus.de"
-print "CreateXML v1.1 von Wolfgang Reszel, 2008-12-05"
+print "CreateXML v1.2 von Wolfgang Reszel, 2009-03-19"
 print
 morphology = {}
 for file in ["morphology-cache.txt","../Morphologie_Deutsch/morphology-cache.txt"]:
@@ -74,13 +74,16 @@ for line in sourcefile:
     if '"' in line:
         line = re.sub(';([^;"]+) "([^;"]+)"([^;]*);',";\\1 \\2\\3;\\2\\3;", line)
 
+    # if "erledigen;" not in line:
+    #     continue
+        
     elements = line.split(";")
 
     for element in elements:
         if element == "":
             continue
 
-        wordcount+=1
+        #wordcount+=1
 
         element = element.replace("&","&amp;")
         element = element.replace("<","&lt;")
@@ -104,7 +107,7 @@ for line in sourcefile:
         id = re.sub("(?u)(.)_$","\\1",id)
     
         dvalue = re.sub('\([^)]+\)',"",element).strip()
-                      
+      
         if result.has_key(id):
             if translations.lower() not in result[id].lower():
                 result[id] = result[id] + "\n<p>" + translations + "</p>"
@@ -154,12 +157,20 @@ for line in sourcefile:
 
 sourcefile.close()
 
+for id in sort_by_value(lengths):    
+    id2 = re.sub('_*\([^)]+\)_*',"",id)
+    if id != id2 and result.has_key(id2):
+        result[id2] = result[id2] + "\n<p>" + translations + "</p>\n<h2>" + headlines[id] + "</h2>" + result[id]
+        result.pop(id)
+        lengths.pop(id)
+
 print "\nXML-Datei wird erzeugt ..."
 destfile = codecs.open('ThesaurusDeutsch.xml','w','utf-8')
 destfile.write("""<?xml version="1.0" encoding="utf-8"?>
 <d:dictionary xmlns="http://www.w3.org/1999/xhtml" xmlns:d="http://www.apple.com/DTDs/DictionaryService-1.0.rng">""")
 
-for id in sort_by_value(lengths):    
+for id in sort_by_value(lengths):
+    wordcount+=1
     destfile.write( re.sub("  +| *\n *","", u"""
 <d:entry id="%s" d:title="%s">
 %s
