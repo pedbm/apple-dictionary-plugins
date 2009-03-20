@@ -1,4 +1,4 @@
-var currentVersion = "v2008.12.19";
+var currentVersion = "v2009.03.20";
 
 var req;
 var updateURL = 'http://www.tekl.de/deutsch/OpenThesaurus_Deutsch.html';

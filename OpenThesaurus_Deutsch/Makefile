@@ -46,7 +46,7 @@ all:
 	@cp dictplug.icns "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary/Contents/Resources"
 #	@SetFile -a e "$(DICT_DEV_KIT_OBJ_DIR)/$(DICT_NAME).dictionary"
 	@echo "Done."
-	@echo "Use 'sudo make install' to install the dictionary or 'make package' to create the Install Package."
+	@echo "Use 'sudo make install' to install the dictionary or 'make dmg' to create the Disk Image."
 
 package:
 	@echo "- Creating install package."
